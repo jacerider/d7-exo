@@ -1,0 +1,11 @@
+name        = eXo | Assets
+description = Integration with the assets module.
+package     = eXo
+version     = VERSION
+core        = 7.x
+
+dependencies[] = exo
+dependencies[] = asset
+
+files[] = views/exo_asset.views.inc
+files[] = views/exo_asset_handler_asset_select_field.inc

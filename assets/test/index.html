@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hallo Editor browser tests</title>
+
+    <!-- Dependencies -->
+    <script src="../lib/jquery/jquery.js"></script>
+    <script src="../lib/jquery-ui/jquery-ui.js"></script>
+    <script src="../../js/exo.rangy.js"></script>
+    <script src="../../js/exo.hallo.js"></script>
+    <script src="../../js/exo.js"></script>
+
+    <!-- Test framework -->
+    <link rel="stylesheet" href="./qunit/qunit.css" type="text/css" />
+    <script type="text/javascript" src="./qunit/qunit.js"></script>
+
+    <!-- CoffeeScript support -->
+    <script type="text/javascript" src="./qunit/coffee-script.js"></script>
+
+    <!-- load test scripts -->
+    <script type="text/coffeescript" src="./hallo.coffee"></script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Unit tests for Hallo Editor</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <div class="hallo-instance">
+        <p class="editable"></p>
+      </div>
+      <div class="hallo-activated">
+        <p class="editable"></p>
+      </div>
+      <div class="hallo-modified">
+        <p class="editable"></p>
+      </div>
+      <div class="hallo-toolbar">
+        <p class="editable"></p>
+      </div>
+    </div>
+  </body>
+</html>

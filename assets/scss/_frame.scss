@@ -1,0 +1,89 @@
+html.exo-exists{
+  #exo{
+    #exo-main-wrapper{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right:0;
+      bottom:0;
+      padding: 0;
+      overflow:hidden;
+    }
+
+    #exo-main{
+      outline: none;
+      display:block;
+      width:100%;
+      height:100%;
+    }
+  }
+}
+
+/**
+ * The content within the iframe.
+ */
+#exo-frame{
+  height:100%;
+
+  #exo-body{
+    height:100%;
+    margin:0;
+    padding:0;
+    background:#333333;
+  }
+
+  .btn,
+  button{
+    @include border-radius(0);
+    @include box-shadow(none);
+  }
+
+  #exo-instance-wrapper,
+  #exo-instance{
+    width:100%;
+    height:100%;
+  }
+
+  #exo-instance{
+    background:#f2f6f7;
+  }
+
+  #exo-finish{
+    @include sans-condensed();
+    position:fixed;
+    bottom:0;
+    left:20px;
+    right:20px;
+    display:block;
+    background:#b64f43;
+    color:#fff;
+    text-align: center;
+    font-size:14px;
+    padding: 15px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    @include transition-property(background,color);
+    @include transition-duration(.3s);
+
+    &:hover{
+      text-decoration: none;
+      background:#ebeef1;
+      color:#5a6274;
+    }
+  }
+
+  #exo-content-wrapper{
+    height:100%;
+    position:relative;
+    overflow:auto;
+  }
+
+  #exo-content{
+    outline: none;
+    position:absolute;
+    top: 45px;
+    left: 20px;
+    right: 20px;
+    bottom:0;
+  }
+}

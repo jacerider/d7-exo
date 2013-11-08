@@ -1,0 +1,32 @@
+/* these rules only apply to fancy boxes when contenteditable is true: they are necessary for the drag-and-drop demo to work correctly */
+.exo-draggable {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+  cursor:move !important;
+  // padding:2px;
+  @include transition-property(background);
+  @include transition-duration(.3s);
+
+  &:hover{
+    background:rgba(#000, .1);
+    // border:2px dashed #bbbbbb;
+    // padding:0px;
+    @include box-sizing(border-box);
+  }
+}
+
+.exo-draggable * {
+  // -moz-user-drag:none;
+  // -webkit-user-drag:none;
+  // user-drag:none;
+} /* hopefully disables the internal default dragging of the img */
+
+.exo-draggable .exo-nodrag{
+  // pointer-events: none;
+  cursor:move !important;
+}

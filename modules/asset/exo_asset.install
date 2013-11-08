@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Sets up the base table for our entity and a table to store information about
+ * the entity types.
+ */
+
+
+function exo_asset_install() {
+
+  // Create image style
+  exo_asset_install_image_style();
+
+  return array();
+}
+
+/**
+ * Create image style
+ */
+function exo_asset_install_image_style(){
+  if(!image_style_load('exo-asset-thumb')){
+    $style = image_style_save(array('name' => 'exo-asset-thumb','label' => 'eXo | Asset Thumb'));
+    $effect = array(
+      'name' => 'image_scale_and_crop',
+      'data' => array(
+        'width' => 120,
+        'height' => 80,
+      ),
+      'isid' => $style['isid'],
+    );
+    image_effect_save($effect);
+  }
+  if(!image_style_load('exo-asset-full')){
+    $style = image_style_save(array('name' => 'exo-asset-full','label' => 'eXo | Asset Full'));
+    $effect = array(
+      'name' => 'image_scale',
+      'data' => array(
+        'width' => 770,
+        'height' => '',
+        'upscale' => TRUE,
+      ),
+      'isid' => $style['isid'],
+    );
+    image_effect_save($effect);
+  }
+}

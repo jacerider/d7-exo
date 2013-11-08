@@ -1,0 +1,55 @@
+#exo-frame{
+
+  .ui-widget-overlay{
+    z-index:2000;
+    background: rgba(#000, .5) !important;
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+  }
+
+  .linkit-wrapper{
+    z-index:2001;
+    background:#fff;
+  }
+
+  .ui-dialog{
+    border:none;
+    @include border-radius(0);
+    padding:20px;
+
+    .ui-dialog-titlebar{
+      background:#ffffff;
+      border:none;
+      @include box-shadow(none);
+      @include border-radius(0);
+      text-shadow:none;
+
+      .ui-dialog-titlebar-close{
+        display:none;
+      }
+    }
+
+    .ui-dialog-content{
+      border:none;
+
+      #linkit-dashboard-form{
+
+        .linkit-insert{
+          margin-right:10px;
+          @extend .btn-success;
+        }
+      }
+    }
+  }
+
+  #exo-link-form{
+
+    .linkit-field-button{
+      margin-top:-13px;
+      margin-bottom:20px;
+    }
+  }
+}

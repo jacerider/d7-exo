@@ -1,0 +1,7 @@
+name        = eXo | Breakpoints
+description = Provides a way to enable breakpoint previews in eXo.
+package     = eXo
+version     = VERSION
+core        = 7.x
+
+dependencies[] = exo

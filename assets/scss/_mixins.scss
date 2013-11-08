@@ -1,0 +1,6 @@
+// Google Fonts PT Sans Narrow Font Mixins
+@mixin sans-condensed($fontWeight: 400, $fontStyle: normal) {
+  font-family: 'Open Sans Condensed', "Helvetica", "Arial", sans-serif;
+  font-style: $fontStyle;
+  font-weight: $fontWeight;
+}
