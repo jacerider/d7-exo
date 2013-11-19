@@ -290,6 +290,8 @@ function exo_asset_preprocess_entity(&$vars) {
   $vars['classes_array'][] = 'exo-asset';
   $vars['classes_array'][] = 'asset-select';
   $vars['classes_array'][] = 'exo-draggable';
+  $vars['classes_array'][] = 'cke_widget_wrapper';
+  $vars['classes_array'][] = 'cke_widget_block';
 
   // $vars['content']['prefix'] = array('#weight' => -10000);
   // $vars['content']['prefix']['dragon'] = array(

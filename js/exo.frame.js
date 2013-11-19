@@ -35,7 +35,7 @@
         return this._loadCss();
       },
       _init: function() {
-        var options, settings;
+        var ckconfig, options, settings, target;
         this.parentOps = parent.jQuery.exo;
         options = {
           $exo: this.element
@@ -53,14 +53,17 @@
           exo: this,
           time: new Date()
         });
-        this.element.html(this.content);
-        this.element.hallo({
-          editable: true,
-          plugins: this.options.pluginsHallo,
-          parentElement: this.$contentWrapper,
-          toolbarCssClass: 'exo-toolbar',
-          toolbar: "halloToolbarFixed"
-        });
+        ckconfig = {
+          extraPlugins: 'divarea',
+          height: 'auto'
+        };
+        CKEDITOR.config.toolbar = [["Format"], ["Bold", "Italic"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]];
+        CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]';
+        console.log(this.content);
+        target = this.element.get(0);
+        console.log(target);
+        CKEDITOR.appendTo(target, ckconfig);
+        CKEDITOR.instances.editor1.setData(this.content);
         if (Modernizr.draganddrop) {
           this.element.exoDragon();
         }
@@ -108,215 +111,17 @@
 }).call(this);
 
 (function() {
-  (function(jQuery) {
-    return jQuery.widget("IKS.exoindent", {
-      options: {
-        editable: null,
-        toolbar: null,
-        uuid: '',
-        document: document,
-        buttonCssClass: null
-      },
-      populateToolbar: function(toolbar) {
-        var buttonize, buttonset,
-          _this = this;
-        buttonset = jQuery("<div class=\"" + this.widgetName + "\"></div>");
-        buttonize = function(cmd, label) {
-          var buttonElement;
-          buttonElement = jQuery('<span></span>');
-          buttonElement.hallobutton({
-            uuid: _this.options.uuid,
-            document: _this.options.document,
-            editable: _this.options.editable,
-            label: label,
-            command: cmd,
-            icon: cmd === 'outdent' ? 'fa-dedent' : 'icon-indent',
-            queryState: false,
-            cssClass: _this.options.buttonCssClass
-          });
-          return buttonset.append(jQuery("button", buttonElement));
-        };
-        buttonize("indent", "Indent");
-        buttonize("outdent", "Outdent");
-        buttonset.hallobuttonset();
-        return toolbar.append(buttonset);
-      }
-    });
-  })(jQuery);
+
 
 }).call(this);
 
 (function() {
-  (function(jQuery) {
-    this.Drupal.behaviors.exoLink = {
-      attach: function(context, settings) {
-        return jQuery('#exo-link-form', context).once(function() {
-          var $content;
-          $content = jQuery('#exo-content');
-          return $content.exolink('linkForm', jQuery(this));
-        });
-      }
-    };
-    return jQuery.widget("IKS.exolink", {
-      processed: false,
-      options: {
-        editable: null,
-        toolbar: null,
-        uuid: '',
-        document: document,
-        buttonCssClass: null,
-        defaultUrl: 'http://'
-      },
-      linkForm: function($form) {
-        var selection, selectionParent;
-        this.form = $form;
-        this.submit = jQuery('.exo-link-save', this.form);
-        this.web = jQuery('#exo-link-web', this.form);
-        this.title = jQuery('#exo-link-title', this.form);
-        selection = this.lastSelection.toString();
-        if (selection) {
-          this.title.val(selection);
-          this.web.focus();
-        } else {
-          this.title.focus();
-        }
-        selectionParent = this.lastSelection.startContainer.parentNode;
-        if (!selectionParent.href) {
-          this.web.val(this.options.defaultUrl);
-          this.submit.text('Insert Link');
-        } else {
-          this.title.parent().hide();
-          this.web.val(jQuery(selectionParent).attr('href'));
-          this.submit.text('Update Link');
-        }
-        return this.submit.on('click', this._linkSave.bind(this));
-      },
-      _linkSave: function(event) {
-        var $wrapper, isEmptyLink, link, linkNode, title,
-          _this = this;
-        event.preventDefault();
-        link = this.web.val();
-        title = this.title.val();
-        this.options.editable.restoreSelection(this.lastSelection);
-        $wrapper = jQuery('#exo-body');
-        if (!!jQuery('#exo-pane').length) {
-          $wrapper.exoPane('destroy');
-        }
-        isEmptyLink = function(link) {
-          if ((new RegExp(/^\s*$/)).test(link)) {
-            return true;
-          }
-          if (link === _this.options.defaultUrl) {
-            return true;
-          }
-          if (!link) {
-            return true;
-          }
-          return false;
-        };
-        if (isEmptyLink(link)) {
-          document.execCommand("unlink", false, false);
-        } else {
-          if (this.lastSelection.startContainer.parentNode.href === void 0) {
-            if (this.lastSelection.collapsed) {
-              linkNode = jQuery("<a href='" + link + "'>" + title + "</a>")[0];
-              this.lastSelection.insertNode(linkNode);
-            } else {
-              document.execCommand("createLink", null, link);
-            }
-          } else {
-            this.lastSelection.startContainer.parentNode.href = link;
-          }
-        }
-        this.options.editable.element.trigger('change');
-        this.options.editable.keepActivated(false);
-        return false;
-      },
-      populateToolbar: function(toolbar) {
-        var buttonize, buttonset,
-          _this = this;
-        buttonset = jQuery("<span class=\"" + this.widgetName + "\"></span>");
-        buttonize = function(type) {
-          var button, buttonHolder, id;
-          id = "" + _this.options.uuid + "-" + type;
-          buttonHolder = jQuery('<span></span>');
-          buttonHolder.hallobutton({
-            label: 'Link',
-            icon: 'icon-link',
-            editable: _this.options.editable,
-            command: null,
-            queryState: false,
-            uuid: _this.options.uuid,
-            cssClass: _this.options.buttonCssClass
-          });
-          buttonset.append(buttonHolder);
-          button = buttonHolder;
-          button.on("click", _this._click.bind(_this));
-          return _this.element.on("keyup paste change mouseup", function(event) {
-            var nodeName, start;
-            start = jQuery(_this.options.editable.getSelection().startContainer);
-            if (start.prop('nodeName')) {
-              nodeName = start.prop('nodeName');
-            } else {
-              nodeName = start.parent().prop('nodeName');
-            }
-            if (nodeName && nodeName.toUpperCase() === "A") {
-              jQuery('button', button).addClass('ui-state-active');
-              return;
-            }
-            return jQuery('button', button).removeClass('ui-state-active');
-          });
-        };
-        buttonize("A");
-        toolbar.append(buttonset);
-        return buttonset.hallobuttonset();
-      },
-      _click: function(event) {
-        var base, element_settings, nodeName, range, sel, start;
-        this.lastSelection = this.options.editable.getSelection();
-        this.options.editable.keepActivated(true);
-        start = jQuery(this.lastSelection.startContainer);
-        if (start.prop('nodeName')) {
-          nodeName = start.prop('nodeName');
-        } else {
-          nodeName = start.parent().prop('nodeName');
-        }
-        if (nodeName && nodeName.toUpperCase() === "A") {
-          sel = window.getSelection();
-          range = sel.getRangeAt(0);
-          range.selectNode(this.lastSelection.startContainer);
-        }
-        if (!this.processed) {
-          this.processed = true;
-          base = this.element.attr('id');
-          element_settings = {
-            url: "/exo/link/ajax",
-            event: "onload",
-            keypress: false,
-            prevent: false,
-            wrapper: base
-          };
-          Drupal.ajax[base] = new Drupal.ajax(base, this.element, element_settings);
-        }
-        this.element.trigger('onload');
-        return false;
-      }
-    });
-  })(jQuery);
+
 
 }).call(this);
 
 (function() {
-  (function(jQuery) {
-    return jQuery.widget("IKS.hallobutton", jQuery.IKS.hallobutton, {
-      _createButton: function(id, command, label, icon) {
-        var classes;
-        classes = ['ui-button', 'ui-widget', 'ui-state-default', 'ui-corner-all', 'ui-button-text-only', "" + command + "_button"];
-        icon = 'fa ' + icon.replace('icon', 'fa');
-        return jQuery("<button id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + label + "\">          <span class=\"ui-button-text\">            <i class=\"" + icon + "\"></i>          </span>        </button>");
-      }
-    });
-  })(jQuery);
+
 
 }).call(this);
 
@@ -362,7 +167,7 @@
           sel.removeAllRanges();
           sel.addRange(range);
           _this.element.get(0).focus();
-          document.execCommand("insertHTML", false, "<param name=\"dragonDropMarker\" /><br>" + _this.content + "<br>");
+          document.execCommand("insertHTML", false, "<param name=\"dragonDropMarker\" />" + _this.content);
           sel.removeAllRanges();
           $DDM = jQuery("param[name=\"dragonDropMarker\"]");
           insertSuccess = $DDM.length > 0;

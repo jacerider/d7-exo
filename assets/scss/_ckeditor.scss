@@ -1,0 +1,45 @@
+#exo-frame{
+
+  #exo-content{
+
+    .cke_chrome{
+      border:none;
+      position:relative;
+      height:100%;
+      width:100%;
+
+      .cke_inner{
+        height:100%;
+        width:100%;
+
+        .cke_top{
+          position:absolute;
+          top:0;
+          left:0;
+          right:0;
+        }
+
+        .cke_contents{
+          position:absolute;
+          top:42px;
+          bottom:29px;
+          left:0;
+          right:0;
+
+          .cke_wysiwyg_div{
+            background-color:none;
+            padding:20px;
+          }
+        }
+
+        .cke_bottom{
+          position:absolute;
+          bottom:0;
+          left:0;
+          right:0;
+        }
+      }
+    }
+  }
+
+}

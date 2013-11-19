@@ -7,7 +7,6 @@
   jQuery.exoFrame =
 
     enable: () ->
-
       jQuery('#exo-content').exoFrame()
 
 
@@ -58,15 +57,47 @@
         type: "exoEnable"
         exo: @
         time: new Date()
-      @element.html(@content)
+
+
+      # @element.html(@content)
+
+      # Turn off automatic editor creation first.
+      # CKEDITOR.disableAutoInline = true;
+      # CKEDITOR.inline( 'exo-content', {toolbar: 'Basic'} );
+
+      ckconfig =
+        extraPlugins: 'divarea'
+        height: 'auto'
+
+      CKEDITOR.config.toolbar = [
+        ["Format"]
+        ["Bold", "Italic"]
+        ["NumberedList", "BulletedList", "-", "Outdent", "Indent"]
+        ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]
+        # ["Styles", "Format", "Font", "FontSize"],
+        # "/",
+        # ["Bold", "Italic", "Underline", "StrikeThrough", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Find", "Replace", "-", "Outdent", "Indent", "-", "Print"],
+        # "/",
+        # ["NumberedList", "BulletedList", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
+        # ["Image", "Table", "-", "Link", "Flash", "Smiley", "TextColor", "BGColor", "Source"]
+      ]
+
+      CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]';
+
+      console.log @content
+
+      target = @element.get( 0 )
+      console.log target
+      CKEDITOR.appendTo(target, ckconfig)
+      CKEDITOR.instances.editor1.setData @content
 
       # Enable Hallo editor
-      @element.hallo
-        editable: true
-        plugins: @options.pluginsHallo
-        parentElement: @$contentWrapper
-        toolbarCssClass: 'exo-toolbar'
-        toolbar: "halloToolbarFixed"
+      # @element.hallo
+      #   editable: true
+      #   plugins: @options.pluginsHallo
+      #   parentElement: @$contentWrapper
+      #   toolbarCssClass: 'exo-toolbar'
+      #   toolbar: "halloToolbarFixed"
 
       # Enable Dragon
       if Modernizr.draganddrop
@@ -122,8 +153,6 @@
           # Add CSS to header
           path = '<link media="screen" href="' + parent.Drupal.settings.basePath + script + '" rel="stylesheet" type="text/css">'
           jQuery('head').append path
-
-
 
 
 )(jQuery)

@@ -75,7 +75,7 @@
         sel.removeAllRanges()
         sel.addRange range
         @element.get(0).focus() # essential
-        document.execCommand "insertHTML", false, "<param name=\"dragonDropMarker\" /><br>" + @content + "<br>"
+        document.execCommand "insertHTML", false, "<param name=\"dragonDropMarker\" />" + @content
         sel.removeAllRanges()
 
         # verification with dragonDropMarker

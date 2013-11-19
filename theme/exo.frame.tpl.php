@@ -15,7 +15,7 @@
         </div>
 
         <div id="exo-content-wrapper">
-          <div id="exo-content">This is just some sample content.</div>
+          <div id="exo-content"></div>
         </div>
 
         <a id="exo-finish" href="#" class="exo"><i class="fa fa-save"></i> Finish Editing</a>

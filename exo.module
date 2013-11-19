@@ -149,10 +149,11 @@ function exo_library() {
     'title' => 'eXo',
     'version' => '0.1',
     'js' => array(
-      $path.'/js/exo.rangy.js' => array(),
+      // $path.'/js/exo.rangy.js' => array(),
       $path.'/js/exo.modernizr.js' => array(),
-      $path.'/js/exo.hallo.min.js' => array(),
-      $path.'/js/exo.frame.min.js' => array('scope'=>'footer'),
+      $path.'/js/ckeditor/ckeditor.js' => array(),
+      // $path.'/js/exo.hallo.min.js' => array(),
+      $path.'/js/exo.frame.js' => array('scope'=>'footer'),
     ),
     'css' => array(
       $path . '/css/exo.css' => array(
