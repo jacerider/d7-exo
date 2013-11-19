@@ -9,6 +9,9 @@
  *   The bundled asset to load a browser for.
  */
 function exo_asset_browser( $asset, $category_tid = NULL, $js = FALSE, $return_commands = FALSE ) {
+  if(!is_a($asset, 'Asset')){
+    $asset = asset_create(array('type' => $asset));
+  }
   $type = $asset->type;
   $asset_type = asset_type_load($type);
 
@@ -73,6 +76,9 @@ function exo_asset_page_view($asset, $instance = 0){
  * @see asset_edit_form()
  */
 function exo_asset_form_wrapper($asset, $js = FALSE) {
+  if(!is_a($asset, 'Asset')){
+    $asset = asset_create(array('type' => $asset));
+  }
   module_load_include('inc','asset','asset.admin');
   $output = drupal_get_form('exo_asset_edit_form', $asset, $js);
 

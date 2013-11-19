@@ -7,36 +7,42 @@
  */
 function exo_asset_menu(){
   // Needed to prevent path errors
-  $items['exo/assets'] = array(
-    'page callback' => 'exo_asset_browser',
-    'access callback' => FALSE,
-    'type' => MENU_CALLBACK
-  );
+  // $items['exo/assets'] = array(
+  //   'page callback' => 'exo_asset_browser',
+  //   'access callback' => FALSE,
+  //   'type' => MENU_CALLBACK
+  // );
+  // $items['exo/asset'] = array(
+  //   'page callback' => 'exo_asset_browser',
+  //   'access callback' => FALSE,
+  //   'type' => MENU_CALLBACK
+  // );
   // Add menu items to add each different type of entity.
   foreach (asset_get_types() as $type) {
-    $asset = asset_create(array('type' => $type->type));
+    // $asset = asset_create(array('type' => $type->type));
     $items['exo/asset/add/' . $type->type] = array(
       'title' => 'Add ' . $type->label,
       'page callback' => 'exo_asset_form_wrapper',
-      'page arguments' => array($asset),
+      'page arguments' => array($type->type),
       'theme callback' => 'ajax_base_page_theme',
       'access callback' => 'asset_access',
       'access arguments' => array('edit', $type),
       'file' => 'exo_asset.page.inc',
       'file path' => drupal_get_path('module', 'exo_asset'),
+      'type' => MENU_CALLBACK
     );
     $items['exo/assets/' . $type->type] = array(
       'page callback' => 'exo_asset_browser',
-      'page arguments' => array($asset,'all'),
+      'page arguments' => array($type->type,'all'),
       'access callback' => 'asset_access',
       'access arguments' => array('view', $type),
       'theme callback' => 'ajax_base_page_theme',
       'file' => 'exo_asset.page.inc',
       'type' => MENU_CALLBACK
     );
-    $items['exo/assets/' . $type->type . '/%'] = array(
+    $items['exo/assets/' . $type->type . '/%/%'] = array(
       'page callback' => 'exo_asset_browser',
-      'page arguments' => array($asset,3),
+      'page arguments' => array($type->type,3,4),
       'access callback' => 'asset_access',
       'access arguments' => array('view', $type),
       'theme callback' => 'ajax_base_page_theme',
@@ -53,6 +59,7 @@ function exo_asset_menu(){
     'access arguments' => array('view', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
   $items['exo/asset/%asset/view/0'] = array(
     'title' => 'View',
@@ -63,6 +70,7 @@ function exo_asset_menu(){
     'access arguments' => array('view', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
   $items['exo/asset/%asset/view/%asset_instance'] = array(
     'title' => 'View',
@@ -73,6 +81,7 @@ function exo_asset_menu(){
     'access arguments' => array('view', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
   $items['exo/asset/%asset/edit'] = array(
     'title' => 'Edit',
@@ -83,6 +92,7 @@ function exo_asset_menu(){
     'access arguments' => array('edit', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
   $items['exo/asset/%asset/delete'] = array(
     'title' => 'Delete',
@@ -93,6 +103,7 @@ function exo_asset_menu(){
     'access arguments' => array('edit', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
   $items['exo/asset/%asset/instance/0'] = array(
     'title' => 'Instance Settings',
@@ -103,6 +114,7 @@ function exo_asset_menu(){
     'access arguments' => array('edit', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
   $items['exo/asset/%asset/instance/%asset_instance'] = array(
     'title' => 'Instance Settings',
@@ -113,6 +125,7 @@ function exo_asset_menu(){
     'access arguments' => array('edit', 2),
     'file' => 'exo_asset.page.inc',
     'file path' => drupal_get_path('module', 'exo_asset'),
+    'type' => MENU_CALLBACK
   );
 
   return $items;
@@ -161,10 +174,48 @@ function exo_asset_ctools_plugin_directory($module, $plugin) {
 function exo_asset_preprocess_field(&$vars) {
   if(in_array($vars['element']['#field_type'], exo_allowed_field_types())){
     foreach($vars['items'] as &$data){
+      //exo_asset_field_storage_set($vars['element']['#entity_type'], $vars['element']['#field_name'], $vars['element']['#bundle']);
       $data['#markup'] = asset_instance_token_replace($data['#markup']);
     }
   }
 }
+
+// /**
+//  * While processing an asset instance, we want to add in field instance overrides.
+//  * We store that information here until we can pick it up in an alter hook.
+//  * @return [type] [description]
+//  */
+// function exo_asset_field_storage_set($entity_type, $field_name, $bundle_name){
+//   $data = &drupal_static(__FUNCTION__);
+//   $data = array(
+//     'entity_type' => $entity_type,
+//     'field_name' => $field_name,
+//     'bundle_name' => $bundle_name,
+//   );
+// }
+
+// function exo_asset_field_storage_get(){
+//   return drupal_static('exo_asset_field_storage_set');
+// }
+
+// function exo_asset_asset_instance_create_alter(&$instance){
+//   if($storage = exo_asset_field_storage_get()){
+//     $field_instance = field_info_instance($storage['entity_type'], $storage['field_name'], $storage['bundle_name']);
+//     if(!empty($field_instance['settings']['exo']['settings']['assets'][$instance['type']]['instance_override'])){
+//       $settings_override = $field_instance['settings']['exo']['settings']['assets'][$instance['type']];
+//       if(!empty($settings_override['instances'])){
+//         $active = asset_instance_get_active($instance['type']);
+//         $data = array();
+//         foreach($active as $instance_type => $settings){
+//           if(empty($settings_override['instances'][$instance_type])) continue;
+//           $handler = asset_instance_get_handler('instance', $instance_type);
+//           $data += $handler->defaults($settings_override['instances'][$instance_type]);
+//         }
+//         $instance['data'] = array_merge($instance['data'],$data);
+//       }
+//     }
+//   }
+// }
 
 /**
  * Preload assets into Javascript object
@@ -262,8 +313,9 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
     '#type' => 'item',
     '#title' => t('Assets'),
     '#tree' => TRUE,
+    '#element_validate' => array('exo_asset_exo_settings_form_alter_validate')
   );
-  foreach($asset_types as $bundle => $asset){
+  foreach($asset_types as $bundle => $asset_type){
 
     $form['settings']['assets'][$bundle] = array(
       '#type' => 'container',
@@ -272,9 +324,58 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
 
     $form['settings']['assets'][$bundle]['enabled'] = array(
       '#type' => 'checkbox',
-      '#title' => '<i class="fa fa-' . $asset->data['icon'] . '"></i> ' . $asset->label,
+      '#title' => '<i class="fa fa-' . $asset_type->data['icon'] . '"></i> ' . $asset_type->label,
       '#default_value' => isset($defaults['assets'][$bundle]['enabled']) ? $defaults['assets'][$bundle]['enabled'] : 0,
     );
+
+    if(@is_array($asset_type->data['instances']) && !empty($asset_type->data['instances'])){
+      $plugins = asset_instance_get_plugin('instance');
+
+      $form['settings']['assets'][$bundle]['instance_override'] = array(
+        '#type' => 'checkbox',
+        '#title' => '<i class="fa fa-chain-broken"></i> ' . $asset_type->label . ' instance settings override',
+        '#default_value' => isset($defaults['assets'][$bundle]['instance_override']) ? $defaults['assets'][$bundle]['instance_override'] : 0,
+      );
+      $form['settings']['assets'][$bundle]['instance_override']['#states'] = array(
+        'visible' => array(
+          ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][enabled]"]' => array('checked' => TRUE),
+        ),
+      );
+
+      $form['settings']['assets'][$bundle]['instances'] = array(
+        '#tree' => TRUE,
+        '#type' => 'fieldset',
+        '#title' => t('Override instance options'),
+        '#description' => t('An asset can have instance settings. These settings allow changes per asset on an individual implementation. This will override the defaults set on the asset type itself.') . '<hr /><br />',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE
+      );
+      $form['settings']['assets'][$bundle]['instances']['#states'] = array(
+        'visible' => array(
+          ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][instance_override]"]' => array('checked' => TRUE),
+        ),
+      );
+      foreach($asset_type->data['instances'] as $plugin => $settings){
+        $parent_name = 'instance[settings][exo][settings][assets]['.$bundle.'][instances]';
+        $settings_defaults = isset($defaults['assets'][$bundle]['instances']) ? (!empty($defaults['assets'][$bundle]['instances'][$plugin]) ? $defaults['assets'][$bundle]['instances'][$plugin] : 0) : $settings;
+        asset_instance_settings_form($form['settings']['assets'][$bundle]['instances'], $form_state, $plugins[$plugin], $settings_defaults, $parent_name);
+
+      }
+
+    }
+  }
+}
+
+/**
+ * Form API validate callback for the type form.
+ */
+function exo_asset_exo_settings_form_alter_validate($element, &$form_state, $form) {
+  $asset_types = asset_get_types();
+  foreach($asset_types as $bundle => $asset_type){
+    if(@is_array($form_state['values']['instance']['settings']['exo']['settings']['assets'][$bundle]['instances'])){
+      $values = &$form_state['values']['instance']['settings']['exo']['settings']['assets'][$bundle]['instances'];
+      $values = asset_instance_settings_values_cleanup($values);
+    }
   }
 }
 
