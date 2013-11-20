@@ -12,7 +12,7 @@
     Drupal.ajax.prototype.commands.exoAssetSet = function(ajax, response, status) {
       var $wrapper, asset;
       $wrapper = jQuery('#exo-body');
-      asset = jQuery(ajax.element).closest('.asset-select');
+      asset = jQuery(ajax.element).closest('.exo-asset');
       return $wrapper.exoPane('assetSet', asset);
     };
     Drupal.ajax.prototype.commands.exoAssetUpdate = function(ajax, response, status) {
@@ -93,7 +93,7 @@
       _assetToToken: function(event) {
         var $content;
         $content = event.exo.content.clone();
-        jQuery('.asset-select', $content).each(function() {
+        jQuery('.exo-asset', $content).each(function() {
           var $asset, aid, iid;
           $asset = jQuery(this);
           aid = $asset.attr('data-aid');

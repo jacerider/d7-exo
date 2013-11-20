@@ -87,6 +87,12 @@ module.exports = ->
         dest: 'tmp/exo_breakpoint'
         cwd: 'exo_breakpoint'
         ext: '.js'
+      ckeditor_exo_asset:
+        expand: true
+        src: ['**.coffee']
+        dest: 'tmp/ckeditor_exo_asset'
+        cwd: 'ckeditor_exo_asset'
+        ext: '.js'
 
     watch:
       full:
@@ -127,9 +133,14 @@ module.exports = ->
           'tmp/exo_breakpoint/*.js'
         ]
         dest: '../modules/breakpoint/js/exo_breakpoint.js'
+      ckeditor_exo_asset:
+        src: [
+          'tmp/ckeditor_exo_asset/*.js'
+        ]
+        dest: '../js/ckeditor/plugins/exo_asset/plugin.js'
 
     # Remove tmp directory once builds are complete
-    clean: ['tmp','exo/*.js','exo/*/*.js','exo_frame/*.js','exo_frame/*/*.js','exo_asset/*.js','exo_breakpoint/*.js','hallo/*.js','hallo/*/*.js']
+    clean: ['tmp','exo/*.js','exo/*/*.js','exo_frame/*.js','exo_frame/*/*.js','exo_asset/*.js','exo_breakpoint/*.js','ckeditor_exo_asset/*.js','hallo/*.js','hallo/*/*.js']
 
     # JavaScript minification
     uglify:

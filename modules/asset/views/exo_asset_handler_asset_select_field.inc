@@ -36,7 +36,7 @@ class exo_asset_handler_asset_select_field extends views_handler_field {
 
     $asset = exo_asset_js_load($values->id);
 
-    $output = 'asdf<div id="asset-select-'.$values->id.'" class="asset-select exo-draggable exo-draggable-copy" data-aid="'.$values->id.'" data-iid="0">Select</div>';
+    $output = '<div id="asset-select-'.$values->id.'" class="asset-select exo-draggable" data-aid="'.$values->id.'" data-iid="0">Select</div>';
     if(asset_access('edit', $asset)){
       $output .= l('<i class="fa fa-pencil"></i>', 'exo/asset/'.$values->id.'/edit/nojs', array('html'=>true, 'attributes'=>array('class'=>array('asset-edit', 'use-ajax', 'btn','btn-xs','btn-info'))));
     }

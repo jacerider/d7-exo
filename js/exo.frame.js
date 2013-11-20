@@ -35,7 +35,8 @@
         return this._loadCss();
       },
       _init: function() {
-        var ckconfig, options, settings, target;
+        var ckconfig, options, target,
+          _this = this;
         this.parentOps = parent.jQuery.exo;
         options = {
           $exo: this.element
@@ -54,25 +55,27 @@
           time: new Date()
         });
         ckconfig = {
-          extraPlugins: 'divarea',
+          extraPlugins: 'divarea,widget,exo_asset',
           height: 'auto'
         };
-        CKEDITOR.config.toolbar = [["Format"], ["Bold", "Italic"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]];
-        CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]';
-        console.log(this.content);
+        CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]; i(*)';
         target = this.element.get(0);
-        console.log(target);
-        CKEDITOR.appendTo(target, ckconfig);
-        CKEDITOR.instances.editor1.setData(this.content);
+        this.ckeditor = CKEDITOR.appendTo(target, ckconfig);
+        this.ckeditor.setData(this.content);
+        this.ckeditor.on('loaded', function() {
+          var settings;
+          settings = Drupal.settings;
+          return Drupal.attachBehaviors(_this.ckeditor.container.$, settings);
+        });
         if (Modernizr.draganddrop) {
-          this.element.exoDragon();
+          this.element.exoDragon({
+            ckeditor: this.ckeditor
+          });
         }
-        settings = Drupal.settings;
-        Drupal.attachBehaviors(this.element, settings);
         return this.element.focus();
       },
       destroy: function() {
-        this.element.hallo('destroy');
+        this.ckeditor.destroy();
         this.$sidebar.exoSidebar('destroy');
         if (Modernizr.draganddrop) {
           return this.element.exoDragon('destroy');
@@ -80,7 +83,8 @@
       },
       disable: function(event) {
         event.preventDefault();
-        this.content = this.element;
+        console.log(this.ckeditor.getData());
+        this.content = jQuery('<div>' + this.ckeditor.getData() + '</div>');
         jQuery.event.trigger({
           type: "exoDisable",
           exo: this,
@@ -138,79 +142,26 @@
     };
     return jQuery.widget("EXO.exoDragon", {
       $dropzones: null,
+      ckeditor: null,
       content: null,
       _create: function() {
+        this.ckeditor = this.options.ckeditor;
         this.$dropzones = jQuery('#exo-content');
         this.bindDropzones();
         return this.bindDraggables(this.$dropzones);
       },
       bindDropzones: function() {
-        var _this = this;
-        this.$dropzones.attr("dropzone", "copy");
-        this.$dropzones.off("dragenter").on("dragenter", function(event) {
-          return event.preventDefault();
-        });
-        return this.$dropzones.off("drop").on("drop", function(event) {
-          var $DDM, e, insertSuccess, range, sel, settings;
-          if (!_this.content) {
-            return false;
-          }
-          e = event.originalEvent;
-          range = null;
-          if (document.caretRangeFromPoint) {
-            range = document.caretRangeFromPoint(e.clientX, e.clientY);
-          } else if (e.rangeParent) {
-            range = document.createRange();
-            range.setStart(e.rangeParent, e.rangeOffset);
-          }
-          sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-          _this.element.get(0).focus();
-          document.execCommand("insertHTML", false, "<param name=\"dragonDropMarker\" />" + _this.content);
-          sel.removeAllRanges();
-          $DDM = jQuery("param[name=\"dragonDropMarker\"]");
-          insertSuccess = $DDM.length > 0;
-          if (insertSuccess) {
-            _this.$draggables.filter("[dragged]", _this.$dropzones).not('.exo-draggable-copy').remove();
-            $DDM.remove();
-          }
-          _this.content = null;
-          settings = Drupal.settings;
-          Drupal.attachBehaviors(_this.element, settings);
-          e.preventDefault();
-          event.stopPropagation();
-          return false;
+        return this.$dropzones.droppable({
+          accept: '.exo-draggable'
         });
       },
       bindDraggables: function(context) {
-        var _this = this;
         this.$draggables = jQuery('.exo-draggable', context);
         if (!this.$draggables.length) {
           return false;
         }
-        this.$draggables.attr("draggable", "true");
-        this.$draggables.attr("contentEditable", "false");
-        this.$noDrags = jQuery('.exo-nodrag', context);
-        this.$noDrags.attr("draggable", "false");
-        return this.$draggables.off("dragstart").on("dragstart", function(event) {
-          var dt, e;
-          if (event.target instanceof HTMLElement) {
-            e = event.originalEvent;
-            dt = e.dataTransfer;
-            jQuery(e.target).removeAttr("dragged");
-            _this.content = event.target.outerHTML;
-            dt.effectAllowed = 'copy';
-            jQuery.event.trigger({
-              type: "exoDragonInsert",
-              dragon: _this,
-              time: new Date()
-            });
-            dt.setData('text/html', _this.content);
-            return jQuery(e.target).attr("dragged", "dragged");
-          } else {
-            return event.preventDefault();
-          }
+        return this.$draggables.draggable({
+          helper: 'clone'
         });
       }
     });

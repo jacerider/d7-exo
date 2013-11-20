@@ -66,30 +66,32 @@
       # CKEDITOR.inline( 'exo-content', {toolbar: 'Basic'} );
 
       ckconfig =
-        extraPlugins: 'divarea'
+        extraPlugins: 'divarea,widget,exo_asset'
         height: 'auto'
 
-      CKEDITOR.config.toolbar = [
-        ["Format"]
-        ["Bold", "Italic"]
-        ["NumberedList", "BulletedList", "-", "Outdent", "Indent"]
-        ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]
-        # ["Styles", "Format", "Font", "FontSize"],
-        # "/",
-        # ["Bold", "Italic", "Underline", "StrikeThrough", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Find", "Replace", "-", "Outdent", "Indent", "-", "Print"],
-        # "/",
-        # ["NumberedList", "BulletedList", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
-        # ["Image", "Table", "-", "Link", "Flash", "Smiley", "TextColor", "BGColor", "Source"]
-      ]
+      # CKEDITOR.config.toolbar = [
+      #   ["Format"]
+      #   ["Bold", "Italic"]
+      #   ["NumberedList", "BulletedList", "-", "Outdent", "Indent"]
+      #   ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock", 'exo_asset']
+      #   # ["Styles", "Format", "Font", "FontSize"],
+      #   # "/",
+      #   # ["Bold", "Italic", "Underline", "StrikeThrough", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Find", "Replace", "-", "Outdent", "Indent", "-", "Print"],
+      #   # "/",
+      #   # ["NumberedList", "BulletedList", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
+      #   # ["Image", "Table", "-", "Link", "Flash", "Smiley", "TextColor", "BGColor", "Source"]
+      # ]
 
-      CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]';
-
-      console.log @content
+      CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]; i(*)';
 
       target = @element.get( 0 )
-      console.log target
-      CKEDITOR.appendTo(target, ckconfig)
-      CKEDITOR.instances.editor1.setData @content
+      @ckeditor = CKEDITOR.appendTo(target, ckconfig)
+      @ckeditor.setData @content
+      @ckeditor.on 'loaded', =>
+        # console.log @ckeditor.container.$
+        # Apply any settings from the returned JSON if available.
+        settings = Drupal.settings;
+        Drupal.attachBehaviors(@ckeditor.container.$, settings);
 
       # Enable Hallo editor
       # @element.hallo
@@ -101,11 +103,11 @@
 
       # Enable Dragon
       if Modernizr.draganddrop
-        @element.exoDragon()
+        @element.exoDragon({ckeditor:@ckeditor})
 
-      # Apply any settings from the returned JSON if available.
-      settings = Drupal.settings;
-      Drupal.attachBehaviors(@element, settings);
+      # # Apply any settings from the returned JSON if available.
+      # settings = Drupal.settings;
+      # Drupal.attachBehaviors(@element, settings);
 
       @element.focus()
 
@@ -113,7 +115,8 @@
     destroy: () ->
 
       # Disable Hallo editor
-      @element.hallo 'destroy'
+      # @element.hallo 'destroy'
+      @ckeditor.destroy()
 
       # Disable eXo sidebar
       @$sidebar.exoSidebar 'destroy'
@@ -127,7 +130,9 @@
       event.preventDefault()
 
       # Update changed content
-      @content = @element
+      console.log @ckeditor.getData()
+      @content = jQuery('<div>' + @ckeditor.getData() + '</div>')
+
       # Fire event
       jQuery.event.trigger
         type: "exoDisable"

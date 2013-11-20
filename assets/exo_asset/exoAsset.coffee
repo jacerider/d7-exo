@@ -11,7 +11,7 @@
   ################################################################
   Drupal.ajax::commands.exoAssetSet = (ajax, response, status) ->
     $wrapper = jQuery('#exo-body')
-    asset = jQuery(ajax.element).closest('.asset-select')
+    asset = jQuery(ajax.element).closest('.exo-asset')
     $wrapper.exoPane 'assetSet', asset
 
 
@@ -117,7 +117,7 @@
     _assetToToken: (event) ->
       $content = event.exo.content.clone()
 
-      jQuery('.asset-select', $content).each ->
+      jQuery('.exo-asset', $content).each ->
         $asset = jQuery(this)
         aid = $asset.attr 'data-aid'
         iid = $asset.attr 'data-iid'
@@ -148,7 +148,7 @@
 
       # Load asset browser
       # Setup AJAX request
-      base = $content.attr('id');
+      base = $content.attr('id')
       element_settings =
         url: "/exo/assets/" + options.asset + "/all/ajax"
         event: "onload"
@@ -158,9 +158,9 @@
         progress:
           type: "none"
 
-      Drupal.ajax[base] = new Drupal.ajax(base, $content, element_settings);
+      Drupal.ajax[base] = new Drupal.ajax(base, $content, element_settings)
 
       # Trigger AJAX request
-      $content.trigger('onload');
+      $content.trigger('onload')
 
 )(jQuery)

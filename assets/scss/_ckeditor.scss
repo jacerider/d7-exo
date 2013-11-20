@@ -17,6 +17,11 @@
           top:0;
           left:0;
           right:0;
+          z-index:3;
+
+          a{
+            text-decoration: none;
+          }
         }
 
         .cke_contents{
@@ -25,6 +30,7 @@
           bottom:29px;
           left:0;
           right:0;
+          z-index:2;
 
           .cke_wysiwyg_div{
             background-color:none;
@@ -37,6 +43,7 @@
           bottom:0;
           left:0;
           right:0;
+          z-index:3;
         }
       }
     }

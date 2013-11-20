@@ -255,26 +255,26 @@ function exo_asset_preprocess_entity(&$vars) {
 
   $asset = $vars['asset'];
 
-  $ops = array(
-    '#prefix' => '<div class="exo-asset-ops btn-group">',
-    '#suffix' => '</div>'
-  );
-  $ops['edit'] = array(
-    '#type' => 'link',
-    '#title' => '<i class="fa fa-edit"><b>Edit</b></i>',
-    '#href' => 'exo/asset/' . $asset->id . '/instance/' . $asset->instance->id . '/nojs',
-    '#html' => TRUE,
-    '#options' => array('html' => TRUE),
-    '#attributes' => array('class'=>array('use-ajax', 'btn','btn-default'))
-  );
-  $ops['remove'] = array(
-    '#type' => 'link',
-    '#title' => '<i class="fa fa-trash-o"><b>Remove</b></i>',
-    '#href' => '',
-    '#html' => TRUE,
-    '#options' => array('html' => TRUE),
-    '#attributes' => array('class'=>array('exo-asset-remove', 'btn','btn-default'))
-  );
+  // $ops = array(
+  //   '#prefix' => '<div class="exo-asset-ops btn-group">',
+  //   '#suffix' => '</div>'
+  // );
+  // $ops['edit'] = array(
+  //   '#type' => 'link',
+  //   '#title' => '<i class="fa fa-edit"><b>Edit</b></i>',
+  //   '#href' => 'exo/asset/' . $asset->id . '/instance/' . $asset->instance->id . '/nojs',
+  //   '#html' => TRUE,
+  //   '#options' => array('html' => TRUE),
+  //   '#attributes' => array('class'=>array('use-ajax', 'btn','btn-default'))
+  // );
+  // $ops['remove'] = array(
+  //   '#type' => 'link',
+  //   '#title' => '<i class="fa fa-trash-o"><b>Remove</b></i>',
+  //   '#href' => '',
+  //   '#html' => TRUE,
+  //   '#options' => array('html' => TRUE),
+  //   '#attributes' => array('class'=>array('exo-asset-remove', 'btn','btn-default'))
+  // );
   $vars['content'] = array(
     'asset' => array(
       '#prefix' => '<div class="exo-nodrag">',
@@ -282,16 +282,17 @@ function exo_asset_preprocess_entity(&$vars) {
       'asset' => $vars['content']
     )
   );
-  $vars['content']['ops'] = $ops;
+  // $vars['content']['ops'] = $ops;
 
   $vars['attributes_array']['data-aid'] = $asset->id;
   $vars['attributes_array']['data-iid'] = $asset->instance->id;
   // $vars['attributes_array']['contentEditable'] = 'false';
   $vars['classes_array'][] = 'exo-asset';
-  $vars['classes_array'][] = 'asset-select';
-  $vars['classes_array'][] = 'exo-draggable';
-  $vars['classes_array'][] = 'cke_widget_wrapper';
-  $vars['classes_array'][] = 'cke_widget_block';
+  $vars['classes_array'][] = 'cke_widget_element';
+  // $vars['classes_array'][] = 'asset-select';
+  // $vars['classes_array'][] = 'exo-draggable';
+  // $vars['classes_array'][] = 'cke_widget_wrapper';
+  // $vars['classes_array'][] = 'cke_widget_block';
 
   // $vars['content']['prefix'] = array('#weight' => -10000);
   // $vars['content']['prefix']['dragon'] = array(
