@@ -4,6 +4,23 @@ CKEDITOR.plugins.add "exo_asset",
 
   init: (editor) ->
 
+    editor.on 'contentDom', (event) ->
+
+      editor.document.on 'drop', (event) ->
+        try
+          event.data.$.dataTransfer.getData('text/html')
+        catch
+          asset = event.data.$.dataTransfer.getData('Text')
+          if asset
+            editor.insertHtml asset
+            event.data.preventDefault()
+
+        setTimeout ->
+          # Cheating to get widget bindings to trigger.
+          editor.mode = 'source'
+          editor.setMode 'wysiwyg'
+        , 0
+
     editor.widgets.add "exo_asset",
 
       button: "Create a simple box"
@@ -14,7 +31,8 @@ CKEDITOR.plugins.add "exo_asset",
         element.name is "div" and element.hasClass("exo-asset")
 
       edit: (event) ->
-        $element = jQuery(event.sender.element.$)
+        $wrapper = jQuery event.sender.wrapper.$
+        $element = jQuery '.exo-asset', $wrapper
         aid = $element.attr 'data-aid'
         iid = $element.attr 'data-iid'
 
@@ -27,8 +45,6 @@ CKEDITOR.plugins.add "exo_asset",
           keypress: false
           prevent: false
           wrapper: base
-          progress:
-            type: "none"
 
         Drupal.ajax[base] = new Drupal.ajax(base, $element, element_settings)
 

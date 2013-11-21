@@ -21,6 +21,9 @@
   Drupal.ajax::commands.exoAssetUpdate = (ajax, response, status) ->
     $wrapper = jQuery('#exo-body')
     $wrapper.exoPane 'assetUpdate', response.aid, response.iid
+    # Refresh ckeditor
+    # $wrapper = jQuery('#exo-content')
+    # $wrapper.exoFrame 'ckeditorUpdate'
 
 
   ################################################################

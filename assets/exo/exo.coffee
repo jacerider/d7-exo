@@ -203,7 +203,7 @@
     # Hide base textareas.
     ##############################################################
     hideTextarea: ->
-      # @element.hide()
+      @element.hide()
 
 
 

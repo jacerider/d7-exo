@@ -55,24 +55,26 @@
           time: new Date()
         });
         ckconfig = {
-          extraPlugins: 'divarea,widget,exo_asset',
+          extraPlugins: 'divarea,widget,exo_asset,exo_link',
           height: 'auto'
         };
+        CKEDITOR.config.toolbar = [["Format"], ["Bold", "Italic"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["ExoLink", "Source"]];
         CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]; i(*)';
         target = this.element.get(0);
         this.ckeditor = CKEDITOR.appendTo(target, ckconfig);
         this.ckeditor.setData(this.content);
         this.ckeditor.on('loaded', function() {
-          var settings;
-          settings = Drupal.settings;
-          return Drupal.attachBehaviors(_this.ckeditor.container.$, settings);
+          if (Modernizr.draganddrop) {
+            return _this.element.exoDragon({
+              ckeditor: _this.ckeditor
+            });
+          }
         });
-        if (Modernizr.draganddrop) {
-          this.element.exoDragon({
-            ckeditor: this.ckeditor
-          });
-        }
         return this.element.focus();
+      },
+      ckeditorUpdate: function() {
+        this.ckeditor.mode = 'source';
+        return this.ckeditor.setMode('wysiwyg');
       },
       destroy: function() {
         this.ckeditor.destroy();
@@ -83,17 +85,24 @@
       },
       disable: function(event) {
         event.preventDefault();
-        console.log(this.ckeditor.getData());
         this.content = jQuery('<div>' + this.ckeditor.getData() + '</div>');
         jQuery.event.trigger({
           type: "exoDisable",
           exo: this,
           time: new Date()
         });
-        parent.jQuery.exo.content = this.content.html().replace(/(\r\n|\n|\r)/gm, "");
+        parent.jQuery.exo.content = this._cleanSource();
         this.element.blur();
         this.$parent.exo('disable');
         return setTimeout(this.destroy.bind(this), 1000);
+      },
+      _cleanSource: function() {
+        jQuery('[contentEditable]', this.content).each(function() {
+          var inside;
+          inside = jQuery(this).html();
+          return jQuery(this).replaceWith(inside);
+        });
+        return this.content.html().replace(/(\r\n|\n|\r)/gm, "");
       },
       _loadCss: function() {
         var i, path, script, _ref, _results;
@@ -145,23 +154,37 @@
       ckeditor: null,
       content: null,
       _create: function() {
-        this.ckeditor = this.options.ckeditor;
-        this.$dropzones = jQuery('#exo-content');
-        this.bindDropzones();
-        return this.bindDraggables(this.$dropzones);
-      },
-      bindDropzones: function() {
-        return this.$dropzones.droppable({
-          accept: '.exo-draggable'
-        });
+        return this.ckeditor = this.options.ckeditor;
       },
       bindDraggables: function(context) {
+        var _this = this;
         this.$draggables = jQuery('.exo-draggable', context);
         if (!this.$draggables.length) {
           return false;
         }
-        return this.$draggables.draggable({
-          helper: 'clone'
+        this.$draggables.attr("draggable", "true");
+        this.$draggables.attr("contentEditable", "false");
+        this.$draggables.off("dragstart").on("dragstart", function(event) {
+          var dt, e;
+          e = event.originalEvent;
+          dt = e.dataTransfer;
+          _this.content = event.target.outerHTML;
+          jQuery.event.trigger({
+            type: "exoDragonInsert",
+            dragon: _this,
+            time: new Date()
+          });
+          dt.dropEffect = 'copy';
+          try {
+            dt.setData("text/html", _this.content);
+          } catch (_error) {
+            e = _error;
+            dt.setData("Text", _this.content);
+          }
+          return true;
+        });
+        return this.$draggables.off('dragend').on('dragend', function(event) {
+          return true;
         });
       }
     });

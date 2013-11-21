@@ -147,7 +147,9 @@
         $in = jQuery('.exo-focus');
         return $in.attr('class', $in.data('originalClassList') + ' exo-page-current');
       },
-      hideTextarea: function() {}
+      hideTextarea: function() {
+        return this.element.hide();
+      }
     });
   })(jQuery);
 

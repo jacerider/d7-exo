@@ -26,7 +26,44 @@
   // user-drag:none;
 } /* hopefully disables the internal default dragging of the img */
 
-.exo-draggable .exo-nodrag{
-  // pointer-events: none;
-  cursor:move !important;
-}
+// .exo-draggable .exo-nodrag{
+//   // pointer-events: none;
+//   cursor:move !important;
+// }
+
+// .exo-draggable{
+//   cursor:move !important;
+
+//   &:hover{
+//     background:rgba(#000, .1);
+//     @include box-sizing(border-box);
+//   }
+
+//   &.ui-draggable-dragging{
+//     display:block;
+//     width:100px;
+//     height:100px;
+//     background:black;
+//     z-index:3000;
+//     // position:static !important;
+//   }
+// }
+
+// body.exo-dragging{
+
+//   #exo-sidebar-wrapper{
+//     overflow:visible !important;
+
+//     .exo-button-content-wrapper{
+//       overflow:visible !important;
+//     }
+//   }
+
+//   .exo-asset-browser{
+
+//     .view,
+//     .views-row{
+//       overflow:visible !important;
+//     }
+//   }
+// }

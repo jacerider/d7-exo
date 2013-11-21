@@ -93,6 +93,12 @@ module.exports = ->
         dest: 'tmp/ckeditor_exo_asset'
         cwd: 'ckeditor_exo_asset'
         ext: '.js'
+      ckeditor_exo_link:
+        expand: true
+        src: ['**.coffee']
+        dest: 'tmp/ckeditor_exo_link'
+        cwd: 'ckeditor_exo_link'
+        ext: '.js'
 
     watch:
       full:
@@ -138,9 +144,14 @@ module.exports = ->
           'tmp/ckeditor_exo_asset/*.js'
         ]
         dest: '../js/ckeditor/plugins/exo_asset/plugin.js'
+      ckeditor_exo_link:
+        src: [
+          'tmp/ckeditor_exo_link/*.js'
+        ]
+        dest: '../js/ckeditor/plugins/exo_link/plugin.js'
 
     # Remove tmp directory once builds are complete
-    clean: ['tmp','exo/*.js','exo/*/*.js','exo_frame/*.js','exo_frame/*/*.js','exo_asset/*.js','exo_breakpoint/*.js','ckeditor_exo_asset/*.js','hallo/*.js','hallo/*/*.js']
+    clean: ['tmp','exo/*.js','exo/*/*.js','exo_frame/*.js','exo_frame/*/*.js','exo_asset/*.js','exo_breakpoint/*.js','ckeditor_exo_asset/*.js','ckeditor_exo_link/*.js','hallo/*.js','hallo/*/*.js']
 
     # JavaScript minification
     uglify:

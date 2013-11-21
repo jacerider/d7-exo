@@ -275,17 +275,20 @@ function exo_asset_preprocess_entity(&$vars) {
   //   '#options' => array('html' => TRUE),
   //   '#attributes' => array('class'=>array('exo-asset-remove', 'btn','btn-default'))
   // );
-  $vars['content'] = array(
-    'asset' => array(
-      '#prefix' => '<div class="exo-nodrag">',
-      '#suffix' => '</div>',
-      'asset' => $vars['content']
-    )
-  );
+  // $vars['content'] = array(
+  //   'asset' => array(
+  //     '#prefix' => '<div class="exo-nodrag">',
+  //     '#suffix' => '</div>',
+  //     'asset' => $vars['content']
+  //   )
+  // );
   // $vars['content']['ops'] = $ops;
 
   $vars['attributes_array']['data-aid'] = $asset->id;
   $vars['attributes_array']['data-iid'] = $asset->instance->id;
+  $vars['attributes_array']['data-widget'] = 'exo_asset';
+  $vars['attributes_array']['data-cke-widget-keep-attr'] = '0';
+
   // $vars['attributes_array']['contentEditable'] = 'false';
   $vars['classes_array'][] = 'exo-asset';
   $vars['classes_array'][] = 'cke_widget_element';
