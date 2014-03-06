@@ -34,7 +34,6 @@ function exo_asset_browser( $asset, $category_tid = NULL, $js = FALSE, $return_c
   $view = views_get_view('assets_browser_' . $type);
   $view->set_arguments(array( 'exo' ));
   $view->exo = TRUE;
-  // dsm($view);
   $output['view']['#markup'] = $view->preview('default');
   $view->destroy();
 
@@ -80,7 +79,13 @@ function exo_asset_form_wrapper($asset, $js = FALSE) {
     $asset = asset_create(array('type' => $asset));
   }
   module_load_include('inc','asset','asset.admin');
-  $output = drupal_get_form('exo_asset_edit_form', $asset, $js);
+  $output = array();
+  $output['form'] = drupal_get_form('exo_asset_edit_form', $asset, $js);
+
+  $output['status'] = array(
+    '#markup' => theme('status_messages'),
+    '#weight' => -10,
+  );
 
   if( $js != 'ajax'){
     return $output;
@@ -101,6 +106,12 @@ function exo_asset_form_wrapper($asset, $js = FALSE) {
  *     with only a asset type defined.
  */
 function exo_asset_edit_form($form, &$form_state, $asset, $js) {
+
+  $form['status'] = array(
+    '#markup' => theme('status_messages'),
+    '#weight' => -10,
+  );
+
   $form += drupal_retrieve_form('asset_edit_form', $form_state, $asset);
   $form_state['build_info']['files'][] = drupal_get_path('module', 'asset').'/asset.admin.inc';
   $form_state['build_info']['files'][] = drupal_get_path('module', 'exo_asset').'/exo_asset.page.inc';
@@ -108,6 +119,7 @@ function exo_asset_edit_form($form, &$form_state, $asset, $js) {
   if($js){
     $form_state['js'] = TRUE;
     $form['#id'] = 'asset-create-form';
+    $form['actions']['submit']['#attributes']['class'][] = 'btn';
     $form['actions']['submit']['#ajax'] = array(
       'callback' => 'exo_asset_edit_form_submit_ajax',
       'wrapper' => 'asset-create-form',
@@ -267,13 +279,23 @@ function exo_asset_instance_form($form, &$form_state, $instance, $op = 'edit'){
   $form_state['build_info']['files'][] = drupal_get_path('module', 'exo_asset').'/exo_asset.page.inc';
   $form_state['entity_type'] = 'asset_instance';
 
-  $form['actions']['submit']['#value'] = t('Update');
-  $form['actions']['submit']['#ajax'] = array(
-    'callback' => 'exo_asset_instance_form_submit_ajax',
-    'wrapper' => 'asset-instance-form',
-    'method' => 'replace',
-    'effect' => 'fade',
-  );
+  if(isset($form['actions'])){
+    $form['actions']['submit']['#value'] = t('Update Instance');
+    $form['actions']['submit']['#ajax'] = array(
+      'callback' => 'exo_asset_instance_form_submit_ajax',
+      'wrapper' => 'asset-instance-form',
+      'method' => 'replace',
+      'effect' => 'fade',
+    );
+  }
+
+  // Asset ID
+  if($asset_id = arg(2)){
+    $form['actions']['edit'] = array(
+      '#markup' => '<strong>' . l('Edit Asset', 'http://dev-aaiwlg.gotpantheon.com/exo/asset/' . $asset_id . '/edit/nojs', array('attributes'=>array('class'=>array('btn', 'use-ajax')))) . '</strong>',
+      '#weight' => 99
+    );
+  }
 
   $form['actions']['cancel'] = array(
     '#markup' => l('Cancel', '', array('attributes'=>array('class'=>array('btn', 'btn-link', 'exo-pane-close')))),

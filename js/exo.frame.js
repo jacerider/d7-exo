@@ -39,17 +39,19 @@
           _this = this;
         this.parentOps = parent.jQuery.exo;
         options = {
-          $exo: this.element
+          $exo: this.element,
+          parent_class: ''
         };
         this.options = jQuery.extend(options, this.parentOps.options);
         this.$parent = this.parentOps.selectors.$element;
+        this.element.addClass(this.options.preview_class);
         this.$instance.removeAttr('class');
         if (this.options.sidebar) {
           this.$instance.addClass('exo-has-sidebar');
         }
         this.$sidebar.exoSidebar(this.options);
         this.content = this.parentOps.content;
-        jQuery.event.trigger({
+        this.element.trigger({
           type: "exoEnable",
           exo: this,
           time: new Date()
@@ -58,23 +60,37 @@
           extraPlugins: 'divarea,widget,exo_asset,exo_link',
           height: 'auto'
         };
-        CKEDITOR.config.toolbar = [["Format"], ["Bold", "Italic"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["ExoLink", "Source"]];
+        CKEDITOR.config.toolbar = [["Format"], ["Bold", "Italic", "-", "ExoLink", "Unlink"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"], ["Source"]];
         CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]; i(*)';
         target = this.element.get(0);
         this.ckeditor = CKEDITOR.appendTo(target, ckconfig);
         this.ckeditor.setData(this.content);
-        this.ckeditor.on('loaded', function() {
+        return this.ckeditor.on('loaded', function() {
+          _this.ckeditor.focus();
+          _this.ckeditorResize();
+          jQuery(window).bind('resize', function(event) {
+            return _this.ckeditorResize();
+          });
           if (Modernizr.draganddrop) {
             return _this.element.exoDragon({
-              ckeditor: _this.ckeditor
+              ckeditor: _this.ckeditor,
+              sidebar: _this.$sidebar
             });
           }
         });
-        return this.element.focus();
       },
       ckeditorUpdate: function() {
         this.ckeditor.mode = 'source';
         return this.ckeditor.setMode('wysiwyg');
+      },
+      ckeditorGet: function() {
+        return this.ckeditor;
+      },
+      ckeditorResize: function() {
+        var content, top;
+        top = jQuery('.cke_top', '#exo-content');
+        content = jQuery('.cke_contents', '#exo-content');
+        return content.css('top', top.outerHeight());
       },
       destroy: function() {
         this.ckeditor.destroy();
@@ -86,7 +102,7 @@
       disable: function(event) {
         event.preventDefault();
         this.content = jQuery('<div>' + this.ckeditor.getData() + '</div>');
-        jQuery.event.trigger({
+        this.element.trigger({
           type: "exoDisable",
           exo: this,
           time: new Date()
@@ -154,7 +170,8 @@
       ckeditor: null,
       content: null,
       _create: function() {
-        return this.ckeditor = this.options.ckeditor;
+        this.ckeditor = this.options.ckeditor;
+        return this.$sidebar = this.options.sidebar;
       },
       bindDraggables: function(context) {
         var _this = this;
@@ -166,10 +183,11 @@
         this.$draggables.attr("contentEditable", "false");
         this.$draggables.off("dragstart").on("dragstart", function(event) {
           var dt, e;
+          _this.ckeditor.focus();
           e = event.originalEvent;
           dt = e.dataTransfer;
           _this.content = event.target.outerHTML;
-          jQuery.event.trigger({
+          _this.$sidebar.trigger({
             type: "exoDragonInsert",
             dragon: _this,
             time: new Date()

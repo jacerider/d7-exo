@@ -20,6 +20,17 @@ html.exo-exists{
 }
 
 /**
+ * Loose overrides
+ */
+body{
+  .btn,
+  button,
+  .button{
+    padding:6px 12px;
+  }
+}
+
+/**
  * The content within the iframe.
  */
 #exo-frame{
@@ -52,8 +63,8 @@ html.exo-exists{
     @include sans-condensed();
     position:fixed;
     bottom:0;
-    left:20px;
-    right:20px;
+    left:0;
+    right:0;
     display:block;
     background:#b64f43;
     color:#fff;
@@ -85,5 +96,17 @@ html.exo-exists{
     left: 0;
     right: 0;
     bottom:0;
+  }
+
+  .exo-asset-placeholder{
+    @include sans-condensed();
+    display:block;
+    background:#f0f0f0;
+    padding:20px;
+    @include border-radius(5px);
+
+    .exo-hide{
+      display:none;
+    }
   }
 }

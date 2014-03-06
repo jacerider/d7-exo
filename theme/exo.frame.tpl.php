@@ -1,6 +1,7 @@
 <html id="exo-frame">
   <head>
     <title></title>
+    <?php print $top; ?>
     <?php print $styles; ?>
     <?php print $js; ?>
     <?php print $settings; ?>

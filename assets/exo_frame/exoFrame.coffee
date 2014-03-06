@@ -41,8 +41,10 @@
       @parentOps = parent.jQuery.exo
       options =
         $exo: @element
+        parent_class: ''
       @options = jQuery.extend options, @parentOps.options
       @$parent = @parentOps.selectors.$element
+      @element.addClass @options.preview_class
 
       # Sidebar
       @$instance.removeAttr 'class'
@@ -53,7 +55,7 @@
       # Set content.
       @content = @parentOps.content
       # Fire event
-      jQuery.event.trigger
+      @element.trigger
         type: "exoEnable"
         exo: @
         time: new Date()
@@ -71,10 +73,11 @@
 
       CKEDITOR.config.toolbar = [
         ["Format"]
-        ["Bold", "Italic"]
+        ["Bold", "Italic", "-", "ExoLink", "Unlink"]
         ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"]
         ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]
-        ["ExoLink", "Source"]
+        ["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"]
+        ["Source"]
         # ["Styles", "Format", "Font", "FontSize"],
         # "/",
         # ["Bold", "Italic", "Underline", "StrikeThrough", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Find", "Replace", "-", "Outdent", "Indent", "-", "Print"],
@@ -89,15 +92,30 @@
       @ckeditor = CKEDITOR.appendTo(target, ckconfig)
       @ckeditor.setData @content
       @ckeditor.on 'loaded', =>
+        @ckeditor.focus()
+
+        # We want to make sure top bar has resize room
+        @ckeditorResize()
+        jQuery(window).bind 'resize', (event) =>
+          @ckeditorResize()
+
         # Enable Dragon
         if Modernizr.draganddrop
-          @element.exoDragon({ckeditor:@ckeditor})
+          @element.exoDragon({ckeditor:@ckeditor,sidebar:@$sidebar})
 
-      @element.focus()
-
-    ckeditorUpdate: () ->
+    ckeditorUpdate: ->
       @ckeditor.mode = 'source'
       @ckeditor.setMode 'wysiwyg'
+
+
+    ckeditorGet: ->
+      @ckeditor
+
+
+    ckeditorResize: ->
+      top = jQuery('.cke_top', '#exo-content');
+      content = jQuery('.cke_contents', '#exo-content');
+      content.css 'top', top.outerHeight()
 
 
     destroy: () ->
@@ -121,7 +139,7 @@
       @content = jQuery('<div>' + @ckeditor.getData() + '</div>')
 
       # Fire event
-      jQuery.event.trigger
+      @element.trigger
         type: "exoDisable"
         exo: @
         time: new Date()

@@ -21,12 +21,7 @@
 
     _create: ->
       @ckeditor = @options.ckeditor
-      # @$dropzones = jQuery '#exo-content'
-      # @bindDropzones()
-      # @bindDraggables(@$dropzones)
-
-
-    # bindDropzones: ->
+      @$sidebar = @options.sidebar
 
 
     bindDraggables: (context) ->
@@ -40,11 +35,14 @@
 
       @$draggables.off("dragstart").on "dragstart", (event) =>
 
+        # Make sure we focus on the editor so drop even fires correctly
+        @ckeditor.focus()
+
         e = event.originalEvent
         dt = e.dataTransfer
 
         @content = event.target.outerHTML
-        jQuery.event.trigger
+        @$sidebar.trigger
           type: "exoDragonInsert"
           dragon: @
           time: new Date()

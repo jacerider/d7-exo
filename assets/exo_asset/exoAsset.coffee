@@ -67,8 +67,8 @@
     _create: ->
       @$exo = @options.$exo
 
-      @element.on "exoEnable", @_tokenToAsset
-      @element.on "exoDisable", @_assetToToken
+      @$exo.on "exoEnable", @_tokenToAsset
+      @$exo.on "exoDisable", @_assetToToken
       @element.on "exoDragonInsert", @_assetSwap
 
       # Retrieve loaded assets from parent.
@@ -80,14 +80,14 @@
     # Swap draggable select into asset markup.
     ##############################################################
     _assetSwap: (event) ->
+
       $content = jQuery event.dragon.content
       if $content.hasClass 'asset-select'
         aid = $content.attr 'data-aid'
         iid = $content.attr 'data-iid'
         base = aid + '-' + iid
         if Drupal.settings and Drupal.settings.exoAssets and Drupal.settings.exoAssets[base]
-          asset = Drupal.settings.exoAssets[base]
-          event.dragon.content = asset
+          event.dragon.content = Drupal.settings.exoAssets[base]
 
 
     ##############################################################

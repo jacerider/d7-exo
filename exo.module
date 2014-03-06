@@ -84,13 +84,22 @@ function exo_add_js($settings = NULL) {
  * Add all JavaScript needed for the editor to work.
  */
 function exo_frame_add_js($settings = NULL) {
-  drupal_add_library('system', 'ui', FALSE);
-  drupal_add_library('system', 'ui.widget', FALSE);
-  // drupal_add_library('system', 'ui.draggable', FALSE);
-  // drupal_add_library('system', 'ui.droppable', FALSE);
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
+  drupal_add_library('system', 'ui', FALSE);
+  drupal_add_library('system', 'ui.widget', FALSE);
   drupal_add_library('exo', 'exo_frame', FALSE);
+}
+
+/**
+ * Implements hook_fett_foundation_add_js_alter().
+ * @param  [type] $add_js [description]
+ * @return [type]         [description]
+ */
+function exo_init(){
+  if(arg(0) == 'exo'){
+    fett_foundation_js_suppress();
+  }
 }
 
 /**
@@ -155,7 +164,7 @@ function exo_library() {
       $path.'/js/exo.modernizr.js' => array(),
       $path.'/js/ckeditor/ckeditor.js' => array(),
       // $path.'/js/exo.hallo.min.js' => array(),
-      $path.'/js/exo.frame.min.js' => array('scope'=>'footer'),
+      $path.'/js/exo.frame.min.js' => array('scope'=>'footer','weight'=>1000),
     ),
     'css' => array(
       $path . '/css/exo.css' => array(

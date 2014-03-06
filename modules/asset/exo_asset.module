@@ -180,6 +180,297 @@ function exo_asset_preprocess_field(&$vars) {
   }
 }
 
+/**
+ * Expose Field API formatter types.
+ *
+ * Formatters handle the display of field values. Formatter hooks are typically
+ * called by the Field Attach API field_attach_prepare_view() and
+ * field_attach_view() functions.
+ *
+ * @return
+ *   An array describing the formatter types implemented by the module.
+ *   The keys are formatter type names. To avoid name clashes, formatter type
+ *   names should be prefixed with the name of the module that exposes them.
+ *   The values are arrays describing the formatter type, with the following
+ *   key/value pairs:
+ *   - label: The human-readable name of the formatter type.
+ *   - description: A short description for the formatter type.
+ *   - field types: An array of field types the formatter supports.
+ *   - settings: An array whose keys are the names of the settings available
+ *     for the formatter type, and whose values are the default values for
+ *     those settings.
+ *
+ * @see hook_field_formatter_info_alter()
+ * @see hook_field_formatter_view()
+ * @see hook_field_formatter_prepare_view()
+ */
+function exo_asset_field_formatter_info() {
+  return array(
+    'text_exo_asset' => array(
+      'label' => t('With Assets'),
+      'field types' => exo_allowed_field_types(),
+    ),
+    'text_exo_asset_trimmed' => array(
+      'label' => t('With Assets Trimmed'),
+      'field types' => exo_allowed_field_types(),
+      'settings' => array('trim_length' => 600,'strip_tags' => 0,'preserve_tags' => '','ending' => '...','exact' => 0,'html' => 1),
+    ),
+    'text_exo_asset_remove' => array(
+      'label' => t('Without Assets'),
+      'field types' => exo_allowed_field_types(),
+    ),
+    'text_exo_asset_remove_trimmed' => array(
+      'label' => t('Without Assets Trimmed'),
+      'field types' => exo_allowed_field_types(),
+      'settings' => array('trim_length' => 600,'strip_tags' => 0,'preserve_tags' => '','ending' => '...','exact' => 0,'html' => 1),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function exo_asset_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element = array();
+
+  if (strpos($display['type'], '_trimmed') !== FALSE) {
+    $element['trim_length'] = array(
+      '#title' => t('Trim length'),
+      '#type' => 'textfield',
+      '#size' => 10,
+      '#default_value' => $settings['trim_length'],
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#required' => TRUE,
+    );
+    $element['strip_tags'] = array(
+      '#title' => t('Strip HTML tags'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['strip_tags'],
+      '#description' => t('If checked, all HTML tags will be stripped.'),
+    );
+    $element['preserve_tags'] = array(
+      '#title' => t('Preserve certain tags '),
+      '#type' => 'textfield',
+      '#size' => 30,
+      '#default_value' => $settings['preserve_tags'],
+      '#description' => t('List the tags that need to be preserved during the stripping process. example &quot;&lt;p&gt; &lt;br&gt;&quot; which will preserve all p and br elements'),
+      '#states' => array(
+        'visible' => array(// action to take.
+          ':input[name="fields['.$field['field_name'].'][settings_edit_form][settings][strip_tags]"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+    $element['ending'] = array(
+      '#title' => t('Ending'),
+      '#type' => 'textfield',
+      '#size' => 40,
+      '#default_value' => $settings['ending'],
+    );
+    $element['exact'] = array(
+      '#title' => t('Ignore word boundary and trim to exact length'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['exact'],
+    );
+    $element['html'] = array(
+      '#title' => t('Handle HTML tags and trim text accordingly'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['html'],
+    );
+
+    // if(module_exists('views')){
+    //   $element['word_boundary'] = array(
+    //     '#title' => t('Trim only on a word boundary.'),
+    //     '#type' => 'checkbox',
+    //     '#default_value' => $settings['word_boundary'],
+    //   );
+    //   $element['ellipsis'] = array(
+    //     '#title' => t('Show an ellipsis (...) at the end of the trimmed string.'),
+    //     '#type' => 'checkbox',
+    //     '#default_value' => $settings['ellipsis'],
+    //   );
+    //   $element['html'] = array(
+    //     '#title' => t('Make sure that the HTML is correct.'),
+    //     '#type' => 'checkbox',
+    //     '#default_value' => $settings['html'],
+    //   );
+    // }
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function exo_asset_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = '';
+
+  if (strpos($display['type'], '_trimmed') !== FALSE) {
+    $summary = t('Trim length') . ': ' . $settings['trim_length'];
+    if(!empty($settings['strip_tags'])){
+      $summary .= '<br />' . t('Strip Tags');
+      if($settings['preserve_tags']){
+        $summary .= ' except "' . htmlentities($settings['preserve_tags']) . '"';
+      }
+    }
+    if(!empty($settings['ending'])) $summary .= '<br />' . t('Ending') . ':' . $settings['ending'];
+    if(!empty($settings['exact'])) $summary .= '<br />' . t('Exact');
+    if(!empty($settings['html'])) $summary .= '<br />' . t('Handle HTML');
+  }
+
+  return $summary;
+}
+
+/**
+* Implements hook_field_formatter_view().
+*/
+function exo_asset_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'text_exo_asset':
+    case 'text_exo_asset_trimmed':
+      foreach ($items as $delta => $item) {
+        $output = _text_sanitize($instance, $langcode, $item, 'value');
+        $output = asset_instance_token_replace($output);
+        if (strpos($display['type'], '_trimmed') !== FALSE) {
+          $output = exo_asset_field_formatter_view_trim($output, $instance, $item, $display);
+        }
+        $element[$delta] = array('#markup' => $output);
+      }
+      break;
+    case 'text_exo_asset_remove':
+    case 'text_exo_asset_remove_trimmed':
+      foreach ($items as $delta => $item) {
+        $output = _text_sanitize($instance, $langcode, $item, 'value');
+        $output = asset_instance_token_remove($output);
+        // dsm($output);
+        if (strpos($display['type'], '_trimmed') !== FALSE) {
+          $output = exo_asset_field_formatter_view_trim($output, $instance, $item, $display);
+        }
+        $element[$delta] = array('#markup' => $output);
+      }
+      break;
+  }
+  return $element;
+}
+
+/**
+ * Trim text
+ */
+function exo_asset_field_formatter_view_trim($output, $instance, $item, $display){
+  if (!empty($display['settings']['strip_tags'])) {
+    $output = strip_tags($output, $display['settings']['preserve_tags']);
+  }
+  return truncateHtml($output, $display['settings']['trim_length'], $display['settings']['ending'], $display['settings']['exact'], $display['settings']['html']);
+}
+
+/**
+ * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
+ *
+ * @param string $text String to truncate.
+ * @param integer $length Length of returned string, including ellipsis.
+ * @param string $ending Ending to be appended to the trimmed string.
+ * @param boolean $exact If false, $text will not be cut mid-word
+ * @param boolean $consider_html If true, HTML tags would be handled correctly
+ *
+ * @return string Trimmed string.
+ */
+function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $consider_html = true) {
+  if ($consider_html) {
+    // if the plain text is shorter than the maximum length, return the whole text
+    if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
+      return $text;
+    }
+    // splits all html-tags to scanable lines
+    preg_match_all('/(<.+?>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
+    $total_length = strlen($ending);
+    $open_tags = array();
+    $truncate = '';
+    foreach ($lines as $line_matchings) {
+      // if there is any html-tag in this line, handle it and add it (uncounted) to the output
+      if (!empty($line_matchings[1])) {
+        // if it's an "empty element" with or without xhtml-conform closing slash
+        if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $line_matchings[1])) {
+          // do nothing
+        // if tag is a closing tag
+        } else if (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
+          // delete tag from $open_tags list
+          $pos = array_search($tag_matchings[1], $open_tags);
+          if ($pos !== false) {
+          unset($open_tags[$pos]);
+          }
+        // if tag is an opening tag
+        } else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
+          // add tag to the beginning of $open_tags list
+          array_unshift($open_tags, strtolower($tag_matchings[1]));
+        }
+        // add html-tag to $truncate'd text
+        $truncate .= $line_matchings[1];
+      }
+      // calculate the length of the plain text part of the line; handle entities as one character
+      $content_length = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
+      if ($total_length+$content_length> $length) {
+        // the number of characters which are left
+        $left = $length - $total_length;
+        $entities_length = 0;
+        // search for html entities
+        if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
+          // calculate the real length of all entities in the legal range
+          foreach ($entities[0] as $entity) {
+            if ($entity[1]+1-$entities_length <= $left) {
+              $left--;
+              $entities_length += strlen($entity[0]);
+            } else {
+              // no more characters left
+              break;
+            }
+          }
+        }
+        $truncate .= substr($line_matchings[2], 0, $left+$entities_length);
+        // maximum lenght is reached, so get off the loop
+        break;
+      } else {
+        $truncate .= $line_matchings[2];
+        $total_length += $content_length;
+      }
+      // if the maximum length is reached, get off the loop
+      if($total_length>= $length) {
+        break;
+      }
+    }
+  } else {
+    if (strlen($text) <= $length) {
+      return $text;
+    } else {
+      $truncate = substr($text, 0, $length - strlen($ending));
+    }
+  }
+  // if the words shouldn't be cut in the middle...
+  if (!$exact) {
+    // ...search the last occurance of a space...
+    $spacepos = strrpos($truncate, ' ');
+    if (isset($spacepos)) {
+      // ...and cut the text in this position
+      $truncate = substr($truncate, 0, $spacepos);
+    }
+  }
+  // add the defined ending to the text
+  $truncate .= $ending;
+  if($consider_html) {
+    // close all unclosed html-tags
+    foreach ($open_tags as $tag) {
+      $truncate .= '</' . $tag . '>';
+    }
+  }
+  return $truncate;
+}
+
 // /**
 //  * While processing an asset instance, we want to add in field instance overrides.
 //  * We store that information here until we can pick it up in an alter hook.
@@ -222,6 +513,7 @@ function exo_asset_preprocess_field(&$vars) {
  */
 function exo_asset_js_load($aid, $iid = 0){
   $asset = asset_load($aid);
+  if(empty($asset->id)) return;
   $instance = asset_instance_load_with_type($iid, $asset->type);
   $view = exo_asset_render($asset, $instance, $view_mode = 'full');
   drupal_add_js(array('exoAssets' => array($aid . '-' . $iid => drupal_render($view))), 'setting');
@@ -250,39 +542,14 @@ function exo_asset_render($asset, $instance, $view_mode = 'full') {
  * Preprocess asset entities
  */
 function exo_asset_preprocess_entity(&$vars) {
+
+  // Additional classes
+  $vars['classes_array'][] = 'exo-asset-' .$vars['view_mode'];
+
   // Only run on assets in preview mode
   if(empty($vars['asset']) || empty($vars['asset']->instance) || empty($vars['asset']->preview)) return;
 
   $asset = $vars['asset'];
-
-  // $ops = array(
-  //   '#prefix' => '<div class="exo-asset-ops btn-group">',
-  //   '#suffix' => '</div>'
-  // );
-  // $ops['edit'] = array(
-  //   '#type' => 'link',
-  //   '#title' => '<i class="fa fa-edit"><b>Edit</b></i>',
-  //   '#href' => 'exo/asset/' . $asset->id . '/instance/' . $asset->instance->id . '/nojs',
-  //   '#html' => TRUE,
-  //   '#options' => array('html' => TRUE),
-  //   '#attributes' => array('class'=>array('use-ajax', 'btn','btn-default'))
-  // );
-  // $ops['remove'] = array(
-  //   '#type' => 'link',
-  //   '#title' => '<i class="fa fa-trash-o"><b>Remove</b></i>',
-  //   '#href' => '',
-  //   '#html' => TRUE,
-  //   '#options' => array('html' => TRUE),
-  //   '#attributes' => array('class'=>array('exo-asset-remove', 'btn','btn-default'))
-  // );
-  // $vars['content'] = array(
-  //   'asset' => array(
-  //     '#prefix' => '<div class="exo-nodrag">',
-  //     '#suffix' => '</div>',
-  //     'asset' => $vars['content']
-  //   )
-  // );
-  // $vars['content']['ops'] = $ops;
 
   $vars['attributes_array']['data-aid'] = $asset->id;
   $vars['attributes_array']['data-iid'] = $asset->instance->id;
@@ -292,20 +559,6 @@ function exo_asset_preprocess_entity(&$vars) {
   // $vars['attributes_array']['contentEditable'] = 'false';
   $vars['classes_array'][] = 'exo-asset';
   $vars['classes_array'][] = 'cke_widget_element';
-  // $vars['classes_array'][] = 'asset-select';
-  // $vars['classes_array'][] = 'exo-draggable';
-  // $vars['classes_array'][] = 'cke_widget_wrapper';
-  // $vars['classes_array'][] = 'cke_widget_block';
-
-  // $vars['content']['prefix'] = array('#weight' => -10000);
-  // $vars['content']['prefix']['dragon'] = array(
-  //   '#markup' => '<div class="asset-select exo-draggable" data-aid="' . $asset->id . '" data-iid="' . $asset->instance->id . '">',
-  // );
-
-  // $vars['content']['suffix'] = array('#weight' => 10000);
-  // $vars['content']['suffix']['dragon'] = array(
-  //   '#markup' => '</div>',
-  // );
 }
 
 /**
@@ -315,7 +568,7 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
   $asset_types = asset_get_types();
   asort($asset_types);
 
-  $form['settings']['assets'] = array(
+  $form['assets'] = array(
     '#type' => 'item',
     '#title' => t('Assets'),
     '#tree' => TRUE,
@@ -323,32 +576,45 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
   );
   foreach($asset_types as $bundle => $asset_type){
 
-    $form['settings']['assets'][$bundle] = array(
+    $form['assets'][$bundle] = array(
       '#type' => 'container',
       '#tree' => TRUE,
     );
 
-    $form['settings']['assets'][$bundle]['enabled'] = array(
+    $form['assets'][$bundle]['enabled'] = array(
       '#type' => 'checkbox',
       '#title' => '<i class="fa fa-' . $asset_type->data['icon'] . '"></i> ' . $asset_type->label,
       '#default_value' => isset($defaults['assets'][$bundle]['enabled']) ? $defaults['assets'][$bundle]['enabled'] : 0,
     );
 
+    // $form['settings']['assets'][$bundle]['placeholder'] = array(
+    //   '#type' => 'checkbox',
+    //   '#title' => '<i class="fa fa-minus-square-o"></i> ' . $asset_type->label . ' as placeholder when in edit mode',
+    //   '#default_value' => isset($defaults['assets'][$bundle]['placeholder']) ? $defaults['assets'][$bundle]['placeholder'] : 0,
+    //   '#field_prefix' => '<div style="float:left;">&nbsp;<i class="fa fa-caret-right"></i>&nbsp;</div>',
+    // );
+    // $form['settings']['assets'][$bundle]['placeholder']['#states'] = array(
+    //   'visible' => array(
+    //     ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][enabled]"]' => array('checked' => TRUE),
+    //   ),
+    // );
+
     if(@is_array($asset_type->data['instances']) && !empty($asset_type->data['instances'])){
       $plugins = asset_instance_get_plugin('instance');
 
-      $form['settings']['assets'][$bundle]['instance_override'] = array(
+      $form['assets'][$bundle]['instance_override'] = array(
         '#type' => 'checkbox',
         '#title' => '<i class="fa fa-chain-broken"></i> ' . $asset_type->label . ' instance settings override',
         '#default_value' => isset($defaults['assets'][$bundle]['instance_override']) ? $defaults['assets'][$bundle]['instance_override'] : 0,
+        '#field_prefix' => '<div style="float:left;">&nbsp;<i class="fa fa-caret-right"></i>&nbsp;</div>',
       );
-      $form['settings']['assets'][$bundle]['instance_override']['#states'] = array(
+      $form['assets'][$bundle]['instance_override']['#states'] = array(
         'visible' => array(
           ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][enabled]"]' => array('checked' => TRUE),
         ),
       );
 
-      $form['settings']['assets'][$bundle]['instances'] = array(
+      $form['assets'][$bundle]['instances'] = array(
         '#tree' => TRUE,
         '#type' => 'fieldset',
         '#title' => t('Override instance options'),
@@ -356,7 +622,7 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
         '#collapsible' => TRUE,
         '#collapsed' => TRUE
       );
-      $form['settings']['assets'][$bundle]['instances']['#states'] = array(
+      $form['assets'][$bundle]['instances']['#states'] = array(
         'visible' => array(
           ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][instance_override]"]' => array('checked' => TRUE),
         ),
@@ -364,7 +630,7 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
       foreach($asset_type->data['instances'] as $plugin => $settings){
         $parent_name = 'instance[settings][exo][settings][assets]['.$bundle.'][instances]';
         $settings_defaults = isset($defaults['assets'][$bundle]['instances']) ? (!empty($defaults['assets'][$bundle]['instances'][$plugin]) ? $defaults['assets'][$bundle]['instances'][$plugin] : 0) : $settings;
-        asset_instance_settings_form($form['settings']['assets'][$bundle]['instances'], $form_state, $plugins[$plugin], $settings_defaults, $parent_name);
+        asset_instance_settings_form($form['assets'][$bundle]['instances'], $form_state, $plugins[$plugin], $settings_defaults, $parent_name);
 
       }
 
@@ -421,7 +687,7 @@ function exo_asset_exo_process_widget_alter(&$element, &$settings, $context){
  * Implements hook_exo_frame().
  */
 function exo_asset_exo_frame(){
-  drupal_add_js(drupal_get_path('module','exo_asset') . '/js/exo_asset.min.js', array('scope'=>'footer'));
+  drupal_add_js(drupal_get_path('module','exo_asset') . '/js/exo_asset.min.js', array('scope'=>'footer', 'weight'=>1010));
 }
 
 /**

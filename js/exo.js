@@ -75,7 +75,7 @@
       },
       enable: function() {
         var i, r, selector, _ref;
-        if (jQuery.browser.msie) {
+        if (/msie|trident/i.test(navigator.userAgent)) {
           r = confirm('Your browser (Internet Explorer) is not support at this time. Please use Firefox, Chrome or Opera when administering content on this site. Would you like to download one of these browsers now?');
           if (r === true) {
             alert('You will now be redirected to a Better Browser...');

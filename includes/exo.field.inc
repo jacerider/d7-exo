@@ -14,6 +14,14 @@ function exo_element_info_alter(&$types) {
   }
 }
 
+function exo_field_info_instance($entity_type, $field_name, $bundle){
+  $instance = field_info_instance($entity_type, $field_name, $bundle);
+  if(!empty($instance['settings']['exo'])){
+    $instance['settings']['exo']['settings'] = empty($instance['settings']['exo']['default']) ? $instance['settings']['exo']['settings'] : variable_get('exo_defaults', array());
+  }
+  return $instance;
+}
+
 /**
  * Process callback.
  */
@@ -23,12 +31,14 @@ function exo_process_widget(&$element) {
   }
 
   $field = field_info_field($element['#field_name']);
-  $instance = field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
+  $instance = exo_field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
 
   // eXo is not enabled on this field
   if(empty($instance['settings']['exo']['enable'])) return $element;
   $options = $instance['settings']['exo']['settings'];
 
+  // Load the settings back into the instance incase we are using defaults.
+  $instance['settings']['exo']['settings'] = $options;
 
   if(empty($element['#entity_type'])){
     $id = 'exo-config';
@@ -42,14 +52,8 @@ function exo_process_widget(&$element) {
   $settings = array(
     'id' => $id,
     'label' => $instance['label'],
+    'preview_class' => !empty($options['preview_class']) ? $options['preview_class'] : '',
   );
-
-  // Plugins
-  if(!empty($options['pluginsHallo'])){
-    foreach($options['pluginsHallo'] as $plugin){
-      if(!empty($plugin)) $settings['pluginsHallo'][$plugin] = (Object) array();
-    }
-  }
 
   $element['#id'] = $id;
   $element['#attributes']['class'][] = 'exo-textarea';
@@ -75,7 +79,7 @@ function exo_process_text_format(&$element) {
   }
 
   $field = field_info_field($element['#field_name']);
-  $instance = field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
+  $instance = exo_field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
 
   // eXo is not enabled on this field
   if(empty($instance['settings']['exo'])) return $element;
@@ -90,10 +94,8 @@ function exo_process_text_format(&$element) {
   $element['format']['#type'] = 'container';
   $element['format']['guidelines']['#access'] = FALSE;
   $element['format']['help']['#access'] = FALSE;
-  $element['format']['format'] = array(
-    '#type' => 'hidden',
-    '#value' => $text_format,
-  );
+  $element['format']['#attributes']['class'][''] = 'element-hidden';
+  $element['format']['format']['#default_value'] = $text_format;
 
   return $element;
 }

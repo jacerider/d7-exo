@@ -52,6 +52,7 @@
         width: 500px;
         height: 100%;
         background: #ffffff;
+        overflow-y: auto;
         @include transition(all 0.5s);
         @include opacity(1);
         @include translate3d(-100%, 0, 0);
@@ -95,27 +96,114 @@
         letter-spacing:-.5px;
       }
 
-      // Imagefield focus overrides
-      .imagefield-focus.focus-box{
-        width:100%;
-        height:100%;
+      // Inline entity form
+      .field-widget-inline-entity-form{
+        padding-bottom:20px;
+
+        table img{
+          height:34px !important;
+          width:auto !important;
+        }
+
+        table img.file-icon{
+          width:16px !important;
+          height:16px !important;
+        }
+
+        a.tabledrag-toggle-weight{
+          display:none;
+        }
+
+        a.tabledrag-handle .handle{
+          width:30px;
+          height:30px;
+        }
+
+        .ief-form{
+          position:absolute;
+          top:0;
+          left:0;
+          bottom:0;
+          right:0;
+          overflow:auto;
+          background:#ffffff;
+          padding:20px;
+          z-index:10;
+
+          legend{
+            padding-top:20px;
+            margin-bottom:0;
+          }
+        }
+      }
+
+      .asset-inline-entity-browser .fieldset-wrapper{
+        position:absolute;
         top:0;
         left:0;
         bottom:0;
         right:0;
-        position:absolute;
-        margin:0;
-        padding-top:45px;
+        overflow:auto;
+
+        // .asset-browser .view-content{
+        //   position:absolute;
+        //   top:200px;
+        //   bottom:200px;
+        //   left:0;
+        //   right:0;
+        // }
+
+        .asset-browser{
+          padding-bottom:60px;
+        }
+
+        .form-wrapper{
+          position:fixed;
+          bottom:5px;
+          left:5px;
+          width:490px;
+          background:#292929;
+          padding:10px;
+        }
+
+        .view-filters{
+          width:auto;
+        }
+
+        .pager li > a,
+        .pager li > span{
+          padding:0 9px;
+          border:none;
+          background:#292929;
+          line-height:1.5em;
+          @include border-radius(0);
+          font-size: .9em;
+        }
+
+        legend{
+          display:none;
+        }
       }
 
-      .imagefield-focus-finish{
-        margin:0;
-        top:0;
-        left:0;
-        padding:5px;
-        width:100%;
-        text-align:center;
+      // Imagefield focus overrides
+      .imagefield-focus.focus-box{
       }
+
+      .imagefield-focus-finish .form-submit{
+        display: block;
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+      }
+
+      // .imagefield-focus-finish{
+      //   margin:0;
+      //   top:0;
+      //   left:0;
+      //   padding:5px;
+      //   width:100%;
+      //   text-align:center;
+      // }
     }
   }
 }

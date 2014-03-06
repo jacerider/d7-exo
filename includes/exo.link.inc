@@ -120,9 +120,15 @@ function exo_link_form($form, &$form_state){
   // );
 
   $form['actions'] = array('#type' => 'actions');
+  // $form['actions']['save'] = array(
+  //   '#markup' => l('Insert Link', '', array('attributes'=>array('class'=>array('btn', 'btn-success', 'exo-link-save')))),
+  //   '#weight' => 100
+  // );
   $form['actions']['save'] = array(
-    '#markup' => l('Insert Link', '', array('attributes'=>array('class'=>array('btn', 'btn-success', 'exo-link-save')))),
-    '#weight' => 100
+    '#type' => 'submit',
+    '#value' => t('Insert Link'),
+    '#attributes' => array('class'=>array('btn', 'btn-success', 'exo-link-save')),
+    '#weight' => 100,
   );
   $form['actions']['cancel'] = array(
     '#markup' => l('Cancel', '', array('attributes'=>array('class'=>array('btn', 'btn-link', 'exo-pane-close')))),

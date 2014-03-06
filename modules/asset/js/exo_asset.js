@@ -47,23 +47,22 @@
       $exo: null,
       _create: function() {
         this.$exo = this.options.$exo;
-        this.element.on("exoEnable", this._tokenToAsset);
-        this.element.on("exoDisable", this._assetToToken);
+        this.$exo.on("exoEnable", this._tokenToAsset);
+        this.$exo.on("exoDisable", this._assetToToken);
         this.element.on("exoDragonInsert", this._assetSwap);
         if (parent.Drupal.settings && parent.Drupal.settings.exoAssets) {
           return Drupal.settings.exoAssets = parent.Drupal.settings.exoAssets;
         }
       },
       _assetSwap: function(event) {
-        var $content, aid, asset, base, iid;
+        var $content, aid, base, iid;
         $content = jQuery(event.dragon.content);
         if ($content.hasClass('asset-select')) {
           aid = $content.attr('data-aid');
           iid = $content.attr('data-iid');
           base = aid + '-' + iid;
           if (Drupal.settings && Drupal.settings.exoAssets && Drupal.settings.exoAssets[base]) {
-            asset = Drupal.settings.exoAssets[base];
-            return event.dragon.content = asset;
+            return event.dragon.content = Drupal.settings.exoAssets[base];
           }
         }
       },

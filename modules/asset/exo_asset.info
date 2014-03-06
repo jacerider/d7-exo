@@ -6,6 +6,7 @@ core        = 7.x
 
 dependencies[] = exo
 dependencies[] = asset
+dependencies[] = asset_instance
 
 files[] = views/exo_asset.views.inc
 files[] = views/exo_asset_handler_asset_select_field.inc

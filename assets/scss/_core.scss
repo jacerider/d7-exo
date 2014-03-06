@@ -187,15 +187,19 @@ html.exo-exists{
 
     input.form-text{
       // @extend .input-sm;
+      margin:0;
     }
 
     .views-submit-button{
       float:none;
 
-      input.form-submit{
+      input.form-submit,
+      button.form-submit{
         @extend .btn-block;
         // @extend .btn-sm;
         @extend .btn-warning;
+        padding:0;
+        margin:0;
       }
     }
   }
