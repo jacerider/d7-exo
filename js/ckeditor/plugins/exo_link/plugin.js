@@ -81,6 +81,7 @@
     submit = jQuery('.exo-link-save', form).removeClass('form-submit');
     title = jQuery('#exo-link-title', form);
     web = jQuery('#exo-link-web', form);
+    newWindow = jQuery('#exo-link-new', form);
     defaultUrl = 'http://';
     selection = editor.getSelection();
     selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
@@ -95,6 +96,10 @@
     if (selectedElement) {
       $selected = jQuery(selectedElement.$);
       title.val($selected.text());
+      if($selected.attr('target') == '_blank'){
+        newWindow.prop('checked', true);
+      }
+      // newWindow.val($selected);
       web.focus();
       web.val($selected.attr('href'));
       submit.val('Update Link');
@@ -116,6 +121,10 @@
         attributes: []
       };
       data.attributes["data-cke-saved-href"] = data.path;
+      data.attributes.target = null;
+      if (newWindow.is(":checked")){
+        data.attributes.target = '_blank';
+      }
       if (!selectedElement) {
         range = selection.getRanges(1)[0];
         if (range.collapsed) {
@@ -144,7 +153,6 @@
         element.setAttribute("href", data.path);
         element.setAttribute("data-cke-saved-href", data.path);
         element.setText((data.title ? data.title : data.path));
-        console.log(element);
         for (name in data.attributes) {
           if (data.attributes[name]) {
             element.setAttribute(name, data.attributes[name]);

@@ -29,19 +29,6 @@ function exo_link_form($form, &$form_state){
     '#id' => 'exo-link-title'
   );
 
-
-  // $form['tabs'] = array(
-  //    '#type' => 'vertical_tabs',
-  // );
-
-  // $form['web'] = array(
-  //   '#type' => 'fieldset',
-  //   '#title' => t('Web address'),
-  //   '#collapsible' => FALSE,
-  //   '#collapsed' => FALSE,
-  //   // '#group' => 'tabs',
-  // );
-
   $form['web'] = array(
     '#type' => 'textfield',
     '#title' => t('URL for the link'),
@@ -52,10 +39,6 @@ function exo_link_form($form, &$form_state){
   );
 
   if(module_exists('linkit')){
-    //_linkit_add_settings('field');
-    // ctools_include('plugins');
-    // // Try to load the insert plugin we have chosen to use.
-    // $plugin = ctools_get_plugins('linkit', 'linkit_insert', 'raw_url');
 
     $plugins = linkit_profile_field_load_all();
     if(!empty($plugins)){
@@ -103,21 +86,11 @@ function exo_link_form($form, &$form_state){
     }
   }
 
-  // $form['email'] = array(
-  //   '#type' => 'fieldset',
-  //   '#title' => t('Email'),
-  //   '#collapsible' => TRUE,
-  //   '#collapsed' => FALSE,
-  //   '#group' => 'tabs',
-  // );
-
-  // $form['email']['url'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => t('Email address for the link'),
-  //   '#size' => 60,
-  //   '#maxlength' => 128,
-  //   '#attributes' => array('class'=>array('input-block-level'),'data-type'=>'email'),
-  // );
+  $form['new'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Open in a new window'),
+    '#id' => 'exo-link-new',
+  );
 
   $form['actions'] = array('#type' => 'actions');
   // $form['actions']['save'] = array(
