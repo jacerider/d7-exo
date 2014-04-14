@@ -99,7 +99,6 @@
       if($selected.attr('target') == '_blank'){
         newWindow.prop('checked', true);
       }
-      // newWindow.val($selected);
       web.focus();
       web.val($selected.attr('href'));
       submit.val('Update Link');
