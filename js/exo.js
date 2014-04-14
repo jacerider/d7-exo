@@ -42,8 +42,7 @@
       options: {
         id: null,
         label: null,
-        plugins: {},
-        pluginsHallo: {}
+        plugins: {}
       },
       _create: function() {
         var _this = this;
