@@ -610,7 +610,7 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
       );
       $form['assets'][$bundle]['instance_override']['#states'] = array(
         'visible' => array(
-          ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][enabled]"]' => array('checked' => TRUE),
+          ':input[name$="[assets]['.$bundle.'][enabled]"]' => array('checked' => TRUE),
         ),
       );
 
@@ -624,7 +624,7 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
       );
       $form['assets'][$bundle]['instances']['#states'] = array(
         'visible' => array(
-          ':input[name="instance[settings][exo][settings][assets]['.$bundle.'][instance_override]"]' => array('checked' => TRUE),
+          ':input[name$="[assets]['.$bundle.'][instance_override]"]' => array('checked' => TRUE),
         ),
       );
       foreach($asset_type->data['instances'] as $plugin => $settings){
