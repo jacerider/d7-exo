@@ -20,8 +20,23 @@
     options:
       id: null
       label: null
+      preview_class: null
+      ckeditor_toolbar: [
+        ["Format"]
+        ["Bold", "Italic", "-", "ExoLink", "Unlink"]
+        ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"]
+        ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]
+        ["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"]
+        ["Source"]
+        # ["Styles", "Format", "Font", "FontSize"],
+        # "/",
+        # ["Bold", "Italic", "Underline", "StrikeThrough", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Find", "Replace", "-", "Outdent", "Indent", "-", "Print"],
+        # "/",
+        # ["NumberedList", "BulletedList", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
+        # ["Image", "Table", "-", "Link", "Flash", "Smiley", "TextColor", "BGColor", "Source"]
+      ]
       plugins:{}
-      pluginsHallo:{}
+      # pluginsHallo:{}
 
     _create: ->
       @$instance = jQuery '#exo-instance'
@@ -42,7 +57,7 @@
       options =
         $exo: @element
         parent_class: ''
-      @options = jQuery.extend options, @parentOps.options
+      @options = jQuery.extend options, @options, @parentOps.options
       @$parent = @parentOps.selectors.$element
       @element.addClass @options.preview_class
 
@@ -71,20 +86,7 @@
         extraPlugins: 'divarea,widget,exo_asset,exo_link'
         height: 'auto'
 
-      CKEDITOR.config.toolbar = [
-        ["Format"]
-        ["Bold", "Italic", "-", "ExoLink", "Unlink"]
-        ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"]
-        ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]
-        ["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"]
-        ["Source"]
-        # ["Styles", "Format", "Font", "FontSize"],
-        # "/",
-        # ["Bold", "Italic", "Underline", "StrikeThrough", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Find", "Replace", "-", "Outdent", "Indent", "-", "Print"],
-        # "/",
-        # ["NumberedList", "BulletedList", "-", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
-        # ["Image", "Table", "-", "Link", "Flash", "Smiley", "TextColor", "BGColor", "Source"]
-      ]
+      CKEDITOR.config.toolbar = @options.ckeditor_toolbar
 
       CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]; i(*)';
 

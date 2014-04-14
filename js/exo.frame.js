@@ -23,8 +23,9 @@
       options: {
         id: null,
         label: null,
-        plugins: {},
-        pluginsHallo: {}
+        preview_class: null,
+        ckeditor_toolbar: [["Format"], ["Bold", "Italic", "-", "ExoLink", "Unlink"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"], ["Source"]],
+        plugins: {}
       },
       _create: function() {
         this.$instance = jQuery('#exo-instance');
@@ -42,7 +43,7 @@
           $exo: this.element,
           parent_class: ''
         };
-        this.options = jQuery.extend(options, this.parentOps.options);
+        this.options = jQuery.extend(options, this.options, this.parentOps.options);
         this.$parent = this.parentOps.selectors.$element;
         this.element.addClass(this.options.preview_class);
         this.$instance.removeAttr('class');
@@ -60,7 +61,7 @@
           extraPlugins: 'divarea,widget,exo_asset,exo_link',
           height: 'auto'
         };
-        CKEDITOR.config.toolbar = [["Format"], ["Bold", "Italic", "-", "ExoLink", "Unlink"], ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"], ["Source"]];
+        CKEDITOR.config.toolbar = this.options.ckeditor_toolbar;
         CKEDITOR.config.extraAllowedContent = 'div(*)[*]; img(*)[*]; a(*)[*]; i(*)';
         target = this.element.get(0);
         this.ckeditor = CKEDITOR.appendTo(target, ckconfig);

@@ -108,22 +108,18 @@ function exo_configuration_form($default_values = array()){
     '#description' => t('Class to add to eXo preview pane. This assists in styling the preview area using frontend styles.'),
   );
 
-  // $options = array(
-  //   // 'halloblock' => t('Block'),
-  //   'halloheadings' => t('Headings'),
-  //   'halloformat' => '<i class="fa fa-bold"></i> <i class="fa fa-italic"></i> ' . t('Format'),
-  //   'hallolists' => '<i class="fa fa-list-ol"></i> <i class="fa fa-list-ul"></i> ' . t('Lists'),
-  //   'hallojustify' => '<i class="fa fa-align-left"></i> <i class="fa fa-align-center"></i> <i class="fa fa-align-right"></i> ' . t('Justify'),
-  //   'exolink' => '<i class="fa fa-link"></i> ' . t('Link'),
-  //   'exoindent' => '<i class="fa fa-indent"></i> <i class="fa fa-dedent"></i> ' . t('Indent'),
-  //   'halloreundo' => '<i class="fa fa-undo"></i> <i class="fa fa-repeat"></i> ' . t('Redo/Undo'),
-  // );
-  // $exo['settings']['pluginsHallo'] = array(
-  //   '#type' => 'checkboxes',
-  //   '#title' => t('Editor Plugins'),
-  //   '#options' => $options,
-  //   '#default_value' => isset($default_values['pluginsHallo']) ? $default_values['pluginsHallo'] : array(),
-  // );
+  $default = '["Format"]' . "\n";
+  $default .= '["Bold", "Italic", "-", "ExoLink", "Unlink"]' . "\n";
+  $default .= '["NumberedList", "BulletedList", "-", "Outdent", "Indent", "-", "Blockquote"]' . "\n";
+  $default .= '["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]' . "\n";
+  $default .= '["Cut", "Copy", "Paste", "PasteText", "PasteFromWord", "-", "Undo", "Redo"]' . "\n";
+  $default .= '["Source"]';
+  $exo['ckeditor_toolbar'] = array(
+    '#type' => 'textarea',
+    '#title' => t('CKEditor Toolbar Config'),
+    '#default_value' => isset($default_values['ckeditor_toolbar']) ? $default_values['ckeditor_toolbar'] : $default,
+    '#description' => t('See !url for more info.', array('!url' => l('CKEditor Docs', 'http://ckeditor.com/latest/samples/plugins/toolbar/toolbar.html', array('attributes'=>array('target' => '_blank'))))),
+  );
 
   drupal_alter('exo_settings_form', $exo, $default_values);
 

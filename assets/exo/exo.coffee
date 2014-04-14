@@ -36,7 +36,7 @@
       id: null
       label: null
       plugins:{}
-      pluginsHallo:{}
+      # pluginsHallo:{}
 
 
     ##############################################################

@@ -55,6 +55,14 @@ function exo_process_widget(&$element) {
     'preview_class' => !empty($options['preview_class']) ? $options['preview_class'] : '',
   );
 
+  if(!empty($options['ckeditor_toolbar'])){
+    $ops = array();
+    foreach(explode("\n", $options['ckeditor_toolbar']) as $row){
+      $ops[] = array_map('trim', explode(',', str_replace(array('[',']','"'), '', $row)));
+    }
+    $settings['ckeditor_toolbar'] = $ops;
+  }
+
   $element['#id'] = $id;
   $element['#attributes']['class'][] = 'exo-textarea';
 
