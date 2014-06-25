@@ -1,12 +1,9 @@
 name        = eXo | Core
 description = A markdown editor for Drupal
 package     = eXo
-version     = VERSION
+version     = 2.0
 core        = 7.x
 
 dependencies[] = libraries
 dependencies[] = ctools
 dependencies[] = fawesome
-
-; Our plugins interfaces and abstract implementations.
-; files[] = plugins/buttons/abstract.class.php
