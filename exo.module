@@ -1,2 +1,4 @@
 <?php
 
+require_once dirname(__FILE__) . '/includes/exo.field.inc';
+require_once dirname(__FILE__) . '/includes/exo.fieldAdmin.inc';
