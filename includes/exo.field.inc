@@ -11,6 +11,8 @@ function exo_element_info_alter(&$types) {
   }
   if(isset($types['text_format'])){
     $types['text_format']['#process'][] = 'exo_process_text_format';
+    $types['text_format']['#pre_render'] = isset($types['text_format']['#pre_render']) ? $types['text_format']['#pre_render'] : array();
+    array_unshift($types['text_format']['#pre_render'], 'exo_pre_render_text_format');
   }
 }
 
@@ -104,6 +106,39 @@ function exo_process_text_format(&$element) {
   $element['format']['help']['#access'] = FALSE;
   $element['format']['#attributes']['class'][''] = 'element-hidden';
   $element['format']['format']['#default_value'] = $text_format;
+
+  return $element;
+}
+
+/**
+ * Pre-render callback
+ */
+function exo_pre_render_text_format($element){
+  if (!isset($element['#entity_type'])) {
+    return $element;
+  }
+
+  $field = field_info_field($element['#field_name']);
+  $instance = exo_field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
+
+  // eXo is not enabled on this field
+  if(empty($instance['settings']['exo'])) return $element;
+
+  if (isset($element['value'])) {
+    if (!isset($element['format'])) {
+      return $element;
+    }
+    if (isset($element['summary'])) {
+      $element['value']['#wysiwyg'] = FALSE;
+      $element['summary']['#wysiwyg'] = FALSE;
+    }
+    else {
+      $element['value']['#wysiwyg'] = FALSE;
+    }
+  }
+  else {
+    $element['#wysiwyg'] = FALSE;
+  }
 
   return $element;
 }
