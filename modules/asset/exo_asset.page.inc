@@ -292,7 +292,7 @@ function exo_asset_instance_form($form, &$form_state, $instance, $op = 'edit'){
   // Asset ID
   if($asset_id = arg(2)){
     $form['actions']['edit'] = array(
-      '#markup' => '<strong>' . l('Edit Asset', 'http://dev-aaiwlg.gotpantheon.com/exo/asset/' . $asset_id . '/edit/nojs', array('attributes'=>array('class'=>array('btn', 'use-ajax')))) . '</strong>',
+      '#markup' => '<strong>' . l('Edit Asset', 'exo/asset/' . $asset_id . '/edit/nojs', array('attributes'=>array('class'=>array('btn', 'use-ajax')))) . '</strong>',
       '#weight' => 99
     );
   }
