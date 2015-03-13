@@ -1,0 +1,260 @@
+#exo-html, #exo-body, #exo-perspective {
+  width: 100%;
+  height: 100%;
+}
+
+/**
+ * The content within the iframe.
+ */
+#exo-html{
+
+  #exo-body{
+    margin:0;
+    padding:0;
+    background:$exo-bg;
+  }
+
+  #exo-perspective{
+    width:100%;
+    height:100%;
+    position: relative;
+  }
+
+  #exo-wrapper{
+    @include display(flex);
+    @include flex-direction(row);
+    @include transition(transform 700ms);
+    @include transform-origin(50% 50%);
+    height:100%;
+    width:100%;
+    position: relative;
+    background:$exo-bg;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0px;
+      opacity: 0;
+      background: rgba(0,0,0,0.2);
+      /* the transition delay of the height needs to be synced with the container transition time */
+      @include transition(opacity 700ms, height 0s 700ms);
+    }
+  }
+
+  #exo-pane{
+    position: absolute;
+    left: rem-calc(30);
+    right: 25%;
+    height: auto;
+    top: 50%;
+    opacity: 0;
+    max-height:100%;
+    overflow:auto;
+    @include clearfix();
+    @include transform(translateY(-50%) rotateY(0deg));
+    @include transform-style(preserve-3d);
+    @include transition(transform 700ms, opacity 700ms);
+  }
+
+  &.animate-pre{
+    #exo-perspective{
+      position: fixed;
+      @include perspective(1500px);
+    }
+
+    #exo-wrapper{
+      position: absolute;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      @include backface-visibility(hidden);
+
+      > *{
+        -webkit-transform: translateZ(-1px); /* solves a rendering bug in Chrome on Windows */
+      }
+    }
+
+    .cke_wysiwyg_div{
+      overflow:hidden;
+    }
+  }
+
+  &.animate{
+
+    #exo-wrapper{
+      @include transform(translateZ(-1500px) translateX(100%) rotateY(-45deg));
+
+      &:after {
+        opacity: 1;
+        height: 101%;
+        @include transition(opacity 0.3s);
+      }
+    }
+
+    #exo-pane{
+      opacity: 1;
+    }
+  }
+
+  &.no-csstransforms3d {
+
+    &.animate{
+
+      #exo-wrapper{
+        left: 75%;
+      }
+    }
+  }
+
+  #exo-instance{
+    @include display(flex);
+    @include flex-direction(column);
+    @include flex(auto);
+  }
+
+  #exo-content{
+    @include display(flex);
+    @include flex(auto);
+    position:relative;
+    background:#f2f6f7;
+
+    .cke{
+      position:absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      left:0;
+    }
+
+    .cke_inner{
+      @include display(flex);
+      @include flex-direction(column);
+      @include flex(auto);
+      height:100%;
+    }
+
+    .cke_contents{
+      @include flex(auto);
+    }
+
+    .cke_wysiwyg_div{
+      max-width:rem-calc(900);
+      margin:0 auto;
+    }
+  }
+
+  #exo-finish{
+    display:block;
+    background:#b64f43;
+    color:#fff;
+    text-align: center;
+    font-size:14px;
+    padding: 15px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    @include transition(background 300ms, color 300ms);
+
+    &:hover{
+      text-decoration: none;
+      background:#ebeef1;
+      color:#5a6274;
+    }
+  }
+
+  // #exo-content-wrapper{
+  //   height:100%;
+  //   position:relative;
+  //   overflow:auto;
+  // }
+
+  // #exo-content{
+  //   outline: none;
+  //   position:absolute;
+  //   top: 0;
+  //   left: 0;
+  //   right: 0;
+  //   bottom:0;
+  // }
+
+  // .exo-asset-placeholder{
+  //   display:block;
+  //   background:#f0f0f0;
+  //   padding:20px;
+
+  //   .exo-hide{
+  //     display:none;
+  //   }
+  // }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Sidebar
+////////////////////////////////////////////////////////////////////////////////
+
+#exo-sidebar{
+  @include flex(0 0 rem-calc(400));
+
+  .exo-sidebar-item{
+
+    > a{
+      display:block;
+      padding:rem-calc(20 20 20 0);
+      @include transition(background 300ms, border-color 300ms);
+      color:#fff;
+      background:$exo-bg-alt;
+      text-transform: uppercase;
+      border-top:1px solid lighten($exo-bg-alt, 2%);
+      border-bottom:1px solid darken($exo-bg-alt, 2%);
+
+      i{
+        @include transition(color 300ms);
+        width:rem-calc(60);
+        text-align: center;
+        color:$exo-primary;
+      }
+
+      &:hover{
+        background:$exo-primary;
+        border-top-color:lighten($exo-primary, 2%);
+        border-bottom-color:darken($exo-primary, 2%);
+
+        i{
+          color:#fff;
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Pane
+////////////////////////////////////////////////////////////////////////////////
+
+#exo-html #exo-pane{
+
+  form{
+    margin:0;
+  }
+
+  .row{
+    max-width:100%;
+  }
+
+  .exo-asset-create{
+    display:block;
+    margin-top:rem-calc($exo-spacing);
+  }
+
+  .views-exposed-form{
+    margin:0 !important;
+  }
+
+  &.swap{
+    @include transform(translateY(-50%) rotateY(40deg));
+    opacity:0;
+  }
+}

@@ -1,0 +1,8 @@
+name        = eXo | Asset
+description = Integration with the asset module.
+package     = eXo
+version     = 7.x-2.0
+core        = 7.x
+
+dependencies[] = exo
+dependencies[] = asset

@@ -1,0 +1,120 @@
+html.exo-exists{
+  height:100%;
+  width:100%;
+
+  &.exo-created{
+    // body{
+    //   opacity: 1;
+    // }
+  }
+
+  body{
+    // overflow:hidden;
+    height:100%;
+    width:100%;
+    // background:#333333;
+    // opacity:0;
+    // @include transition(opacity 3000ms);
+  }
+
+  #exo-wrapper{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow:hidden;
+    @include perspective(1200px);
+  }
+
+  #exo-loading{
+    background: rgba(#000, .2);
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:2;
+
+    .fa-stack{
+      position:absolute;
+      right:50%;
+      top:50%;
+      margin-right:-26px;
+      margin-top:-26px;
+    }
+  }
+
+  #exo-page{
+    overflow: auto;
+  }
+
+  .exo-page{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+    @include backface-visibility(hidden);
+    @include transform(translate3d(0, 0, 0));
+    @include transform-style(preserve-3d);
+  }
+
+  .exo-page-current,
+  .no-js .exo-page {
+    visibility: visible;
+    z-index: 1;
+  }
+
+  .exo-page-ontop {
+    z-index: 1000;
+  }
+
+  // Frame Wrapper
+  #exo{
+    #exo-main-wrapper{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right:0;
+      bottom:0;
+      padding: 0;
+      overflow:hidden;
+    }
+
+    #exo-main{
+      outline: none;
+      display:block;
+      width:100%;
+      height:100%;
+      border:none;
+    }
+  }
+}
+
+/**
+ * The placeholder for the textarea.
+ */
+.exo-placeholder{
+  // @include sans-condensed();
+  display:block;
+  background:$exo-bg;
+  padding:5px;
+
+  &:hover{
+    text-decoration: none;
+
+    span{
+      background:$exo-primary;
+    }
+  }
+
+  span{
+    display:block;
+    font-size:rem-calc(18);
+    line-height:rem-calc(18);
+    color:#f0f0f0;
+    // background:$exo-bg-alt;
+    padding:rem-calc($exo-spacing);
+    @include transition(background 500ms);
+  }
+}

@@ -15,15 +15,69 @@ function exo_element_info_alter(&$types) {
 }
 
 /**
+ * Get exo settings.
+ */
+function exo_valid($element){
+  if(!isset($element['#entity_type'])) return FALSE;
+  $exo = array();
+  $exo['field'] = field_info_field($element['#field_name']);
+  $exo['instance'] = exo_field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
+  return !empty($exo['instance']['settings']['exo']['status']) ? $exo + array('config' => $exo['instance']['settings']['exo']) : FALSE;
+}
+
+/**
+ * An extension of field_info_instance() that adds exo defaults if necessary.
+ */
+function exo_field_info_instance($entity_type, $field_name, $bundle){
+  $instance = field_info_instance($entity_type, $field_name, $bundle);
+  if(!empty($instance['settings']['exo']) && !empty($instance['settings']['exo']['default'])){
+    $instance['settings']['exo']['settings'] = variable_get('exo_defaults', array());
+  }
+  return $instance;
+}
+
+/**
  * Process callback for all elements allowed in exo_allowed_elements().
  */
 function exo_process_widget(&$element) {
-  if(isset($element['#entity'])){
-    $field = field_info_field($element['#field_name']);
-    $instance = field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
-    // dsm($field);
-    // dsm($instance);
+
+  if($exo = exo_valid($element)){
+    $field = $exo['field'];
+    $instance = $exo['instance'];
+    $config = $exo['config'];
+
+    if(empty($element['#entity_type'])){
+      $selector = drupal_html_id('exo-config');
+    }else{
+      $selector = drupal_html_id('exo-'.$element['#entity_type'].'-'.$element['#bundle'].'-'.$element['#field_name']);
+    }
+
+    $element['#id'] = $selector;
+    $element['#attributes']['class'][] = 'exo-textarea';
+    $element['#title'] = '';
+    $element['#resizable'] = FALSE;
+
+    list($id, $vid, $bundle) = entity_extract_ids($element['#entity_type'], $element['#entity']);
+
+    $settings = array(
+      'selector' => $selector,
+      'label' => $instance['label'],
+      'type' => $element['#entity_type'],
+      'id' => $id,
+      'bundle' => $bundle,
+      'field_name' => $element['#field_name'],
+      'delta' => $element['#delta']
+    );
+
+    $context = array(
+      'field' => $field,
+      'instance' => $instance
+    );
+    drupal_alter('exo_process_widget', $element, $settings, $context);
+
+    exo_add_js($settings);
   }
+
   return $element;
 }
 
@@ -31,7 +85,16 @@ function exo_process_widget(&$element) {
  * Process callback for text_format.
  */
 function exo_process_text_format(&$element) {
-  // dsm('process text format');
+  if($exo = exo_valid($element)){
+    $config = $exo['config'];
+    if(!empty($config['settings']['text_format'])){
+      $element['format']['#type'] = 'container';
+      $element['format']['guidelines']['#access'] = FALSE;
+      $element['format']['help']['#access'] = FALSE;
+      $element['format']['#attributes']['class'][''] = 'element-hidden';
+      $element['format']['format']['#default_value'] = $config['settings']['text_format'];
+    }
+  }
   return $element;
 }
 

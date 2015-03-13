@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * Implements hook_menu
+ *
+ * @author JaceRider
+ */
+function exo_asset_menu(){
+  $items = array();
+  $items['exo/asset/%asset'] = array(
+    'title' => 'Asset Editor',
+    'page callback' => 'exo_asset_edit',
+    'page arguments' => array(2),
+    'access callback'  => 'asset_access',
+    'access arguments' => array('edit', 2),
+    'theme callback' => 'ajax_base_page_theme',
+    'file' => 'includes/exo_asset.page.inc',
+    'type' => MENU_CALLBACK,
+  );
+  foreach (asset_get_types() as $type) {
+    $items['exo/assets/' . $type->type] = array(
+      'page callback' => 'exo_asset_browser',
+      'page arguments' => array($type->type),
+      'access callback' => 'asset_access',
+      'access arguments' => array('view', $type),
+      'theme callback' => 'ajax_base_page_theme',
+      'file' => 'includes/exo_asset.page.inc',
+      'type' => MENU_CALLBACK
+    );
+    $items['exo/asset/' . $type->type] = array(
+      'title' => 'Add ' . $type->name,
+      'page callback' => 'exo_asset_edit',
+      'page arguments' => array(2),
+      'access callback'  => 'asset_access',
+      'access arguments' => array('edit', 2),
+      'theme callback' => 'ajax_base_page_theme',
+      'file' => 'includes/exo_asset.page.inc',
+      'type' => MENU_CALLBACK,
+    );
+  }
+
+  // Default instance
+  $items['exo/asset/%asset/0'] = array(
+    'title' => 'Instance Editor',
+    'page callback' => 'exo_asset_instance',
+    'page arguments' => array(2, 3),
+    'access callback' => 'asset_instance_access',
+    'access arguments' => array('edit', 3),
+      'file' => 'includes/exo_asset.page.inc',
+      'type' => MENU_CALLBACK,
+  );
+  // Specific instance
+  $items['exo/asset/%asset/%asset_instance'] = array(
+    'title' => 'Instance Editor',
+    'page callback' => 'exo_asset_instance',
+    'page arguments' => array(2, 3),
+    'access callback' => 'asset_instance_access',
+    'access arguments' => array('edit', 3),
+      'file' => 'includes/exo_asset.page.inc',
+      'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_exo_frame().
+ */
+function exo_asset_exo_frame(){
+  drupal_add_js(drupal_get_path('module','exo_asset') . '/js/exo_asset.js', array('scope'=>'footer', 'weight'=>1010));
+  asset_token_tool_load();
+}
+
+/**
+ * Implements hook_exo_frame_resources_alter().
+ */
+function exo_asset_exo_frame_resources_alter(&$commands, $context){
+  list($entity_type, $entity_id, $field_name, $delta) = array_values($context);
+  if($entity = entity_load($entity_type, array($entity_id))){
+    $field = field_get_items($entity_type, reset($entity), $field_name);
+    foreach(asset_token_find($field[$delta]['value']) as $id => $data){
+      asset_load_js($data['aid'], $data['iid'], 'asset', TRUE);
+    }
+  }
+}
+
+/**
+ * Load in asset setting so eXo frame can access them.
+ */
+function exo_asset_exo_process_widget_alter(&$element, &$settings, $context){
+  $instance = $context['instance'];
+  if(!empty($instance['settings']['asset'])){
+    $config = empty($instance['settings']['asset']['default']) ? $instance['settings']['asset']['settings'] : variable_get('asset', array());
+    foreach($config['assets'] as $type => $data){
+      $asset_type = asset_type_load($type);
+      $settings['assets'][$type] = $asset_type;
+    }
+  }
+}
+
+// /**
+//  * Implements hook_element_info_alter().
+//  */
+// function exo_asset_element_info_alter(&$types) {
+//   foreach(exo_allowed_elements() as $element){
+//     if(isset($types[$element])){
+//       $types[$element]['#process'][] = 'exo_asset_process_widget';
+//     }
+//   }
+// }
+
+// *
+//  * Process callback for all elements allowed in exo_allowed_elements().
+
+// function exo_asset_process_widget(&$element) {
+
+//   if($exo = exo_valid($element)){
+//     foreach(asset_token_find($element['#value']) as $id => $data){
+//       asset_load_js($data['aid'], $data['iid'], 'asset_preview', TRUE);
+//     }
+//   }
+
+//   return $element;
+// }

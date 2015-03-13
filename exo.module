@@ -2,3 +2,211 @@
 
 require_once dirname(__FILE__) . '/includes/exo.field.inc';
 require_once dirname(__FILE__) . '/includes/exo.fieldAdmin.inc';
+
+/**
+ * Implements hook_menu
+ *
+ */
+function exo_menu(){
+  $items['exo/frame'] = array(
+    'page callback' => 'exo_frame_view',
+    'delivery callback' => 'exo_deliver_html_page',
+    'access arguments' => array('access content'),
+    'file' => 'includes/exo.frame.inc',
+    'type' => MENU_CALLBACK
+  );
+  $items['exo/frame/resources/%/%/%/%'] = array(
+    'page callback' => 'exo_frame_resources',
+    'page arguments' => array(3,4,5,6),
+    'access arguments' => array('access content'),
+    'theme callback' => 'ajax_base_page_theme',
+    'file' => 'includes/exo.frame.inc',
+    'type' => MENU_CALLBACK
+  );
+  $items['admin/config/content/exo'] = array(
+    'title' => 'eXo Editor',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('exo_settings'),
+    'access arguments' => array('administer exo'),
+    'file' => 'includes/exo.admin.inc',
+    'description' => t('Configure the eXo editor.')
+  );
+  $items['admin/config/content/exo/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10
+  );
+  return $items;
+}
+
+/**
+ * Prevent colorbox from loading on frame pages.
+ */
+function exo_colorbox_active_alter(&$page_match){
+  if(arg(0) === 'exo'){
+    $page_match = FALSE;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function exo_theme() {
+  return array(
+    'exo_frame' => array(
+      'variables' => array(),
+      'file' => 'theme/exo.theme.inc',
+      'template' => 'theme/exo.frame',
+    ),
+  );
+}
+
+/**
+ * Add all JavaScript needed for the editor to work.
+ */
+function exo_add_js($settings = NULL) {
+  static $once;
+  if(!isset($once)){
+    $once = 1;
+    drupal_add_library('system', 'ui');
+    drupal_add_library('system', 'ui.widget');
+    drupal_add_library('system', 'drupal.ajax');
+    drupal_add_library('system', 'jquery.form');
+    drupal_add_library('exo', 'exo');
+  }
+  if($settings && is_array($settings)){
+    drupal_add_js(array('exo' => array($settings['selector'] => $settings)), 'setting');
+  }
+}
+
+/**
+ * Add all JavaScript needed for the editor to work.
+ */
+function exo_frame_add_js($settings = NULL) {
+  drupal_add_library('system', 'drupal.ajax');
+  drupal_add_library('system', 'jquery.form');
+  drupal_add_library('system', 'ui');
+  drupal_add_library('system', 'ui.widget');
+  if(!module_exists('ckeditor')){
+    drupal_add_library('exo', 'ckeditor');
+  }
+  else{
+    drupal_add_library('ckeditor', 'ckeditor');
+  }
+  drupal_add_library('exo', 'exo_frame');
+  drupal_add_js(array('exoFrame' => array('path' => base_path() . drupal_get_path('module', 'exo'))), 'setting');
+}
+
+/**
+ * Implements hook_library().
+ */
+function exo_library() {
+  $path = drupal_get_path('module', 'exo');
+  $libraries['exo'] = array(
+    'title' => 'eXo',
+    'version' => '0.1',
+    'js' => array(
+      $path.'/js/exo.js' => array('scope'=>'footer'),
+    ),
+    'css' => array(
+      $path . '/css/exo.variables.scss' => array('type' => 'file','media' => 'screen'),
+      $path . '/css/exo.animations.scss' => array('type' => 'file','media' => 'screen'),
+      $path . '/css/exo.core.scss' => array('type' => 'file','media' => 'screen'),
+      'http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      )
+    )
+  );
+  $libraries['exo_frame'] = array(
+    'title' => 'eXo',
+    'version' => '0.1',
+    'js' => array(
+      $path.'/js/modernizr.js' => array('weight'=>-1000),
+      $path.'/js/exo.frame.js' => array('scope'=>'footer','weight'=>1000),
+    ),
+    'css' => array(
+      $path . '/css/exo.variables.scss' => array('type' => 'file','media' => 'screen'),
+      $path . '/css/exo.mixins.scss' => array('type' => 'file','media' => 'screen'),
+      $path . '/css/exo.frame.scss' => array('type' => 'file','media' => 'screen'),
+      'http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      )
+    )
+  );
+  $themes = list_themes();
+  if(isset($themes['boushh'])){
+    $theme = $themes['boushh'];
+    $libraries['exo_frame']['css'][drupal_get_path('theme', 'boushh') . '/assets/scss/libraries/_variables.scss'] = array('type' => 'file','media' => 'screen','weight' => -1100);
+    foreach($theme->stylesheets['all'] as $relative_path => $filepath){
+      $libraries['exo_frame']['css'][$filepath] = array('type' => 'file','media' => 'screen');
+    }
+  }
+  if(!module_exists('ckeditor')){
+    $libraries['ckeditor'] = array(
+      'title' => 'CKEditor',
+      'website' => 'http://ckeditor.com',
+      'version' => '4.4.7',
+      'js' => array(
+        libraries_get_path('ckeditor') . '/ckeditor.js' => array(),
+      ),
+    );
+  }
+  return $libraries;
+}
+
+/**
+ * Implements hook_sonar_var_alter().
+ */
+function exo_sonar_var_alter(&$vars){
+  if(arg(0) === 'exo'){
+    $settings = variable_get('theme_'.variable_get('admin_theme').'_settings', '');
+    if(isset($settings['boushh_bg'])){
+      $vars['boushh-bg'] = $settings['boushh_bg'];
+    }
+    if(isset($settings['boushh_primary'])){
+      $vars['boushh-primary'] = $settings['boushh_primary'];
+    }
+  }
+}
+
+/**
+ * Insert HTML into eXo editor.
+ *
+ * @param $html
+ *   Html to insert into editor.
+ * @param $settings
+ *   An optional array of settings that will be used for this command only.
+ *
+ * @return
+ *   An array suitable for use with the ajax_render() function.
+ */
+function ajax_command_exo_html($html, $settings = NULL) {
+  return array(
+    'command' => 'exoHtml',
+    'data' => $html,
+    'settings' => $settings,
+  );
+}
+
+/**
+ * Insert HTML into eXo pane.
+ *
+ * @param $html
+ *   Html to insert into editor.
+ * @param $settings
+ *   An optional array of settings that will be used for this command only.
+ *
+ * @return
+ *   An array suitable for use with the ajax_render() function.
+ */
+function ajax_command_exo_pane($html, $settings = NULL) {
+  $messages = theme('status_messages');
+  $html = $messages . $html;
+  return array(
+    'command' => 'exoPane',
+    'data' => $html,
+    'settings' => $settings,
+  );
+}
