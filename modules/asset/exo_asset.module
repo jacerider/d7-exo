@@ -97,28 +97,3 @@ function exo_asset_exo_process_widget_alter(&$element, &$settings, $context){
     }
   }
 }
-
-// /**
-//  * Implements hook_element_info_alter().
-//  */
-// function exo_asset_element_info_alter(&$types) {
-//   foreach(exo_allowed_elements() as $element){
-//     if(isset($types[$element])){
-//       $types[$element]['#process'][] = 'exo_asset_process_widget';
-//     }
-//   }
-// }
-
-// *
-//  * Process callback for all elements allowed in exo_allowed_elements().
-
-// function exo_asset_process_widget(&$element) {
-
-//   if($exo = exo_valid($element)){
-//     foreach(asset_token_find($element['#value']) as $id => $data){
-//       asset_load_js($data['aid'], $data['iid'], 'asset_preview', TRUE);
-//     }
-//   }
-
-//   return $element;
-// }

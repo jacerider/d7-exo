@@ -52,7 +52,7 @@
     top: 50%;
     opacity: 0;
     max-height:100%;
-    overflow:auto;
+    overflow-y:auto;
     @include clearfix();
     @include transform(translateY(-50%) rotateY(0deg));
     @include transform-style(preserve-3d);

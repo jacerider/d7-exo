@@ -57,7 +57,10 @@ function exo_process_widget(&$element) {
     $element['#title'] = '';
     $element['#resizable'] = FALSE;
 
-    list($id, $vid, $bundle) = entity_extract_ids($element['#entity_type'], $element['#entity']);
+    $id = $vid = $bundle = NULL;
+    if($element['#entity']){
+      list($id, $vid, $bundle) = entity_extract_ids($element['#entity_type'], $element['#entity']);
+    }
 
     $settings = array(
       'selector' => $selector,
