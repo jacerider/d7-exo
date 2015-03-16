@@ -47,7 +47,7 @@
   #exo-pane{
     position: absolute;
     left: rem-calc(30);
-    right: 25%;
+    right: 26%;
     height: auto;
     top: 50%;
     opacity: 0;
@@ -139,6 +139,7 @@
 
     .cke_contents{
       @include flex(auto);
+      height:100% !important;
     }
 
     .cke_wysiwyg_div{
@@ -238,6 +239,7 @@
 
   form{
     margin:0;
+    padding:0;
   }
 
   .row{

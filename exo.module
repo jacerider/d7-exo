@@ -149,7 +149,7 @@ function exo_library() {
       'website' => 'http://ckeditor.com',
       'version' => '4.4.7',
       'js' => array(
-        libraries_get_path('ckeditor') . '/ckeditor.js' => array(),
+        libraries_get_path('ckeditor') . '/ckeditor.js' => array('preprocess' => FALSE),
       ),
     );
   }
