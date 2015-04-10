@@ -4,15 +4,15 @@ $exo-spacing: 20 !default;
 
 $exo-primary: #0997c3 !default;
 
-@if variable-exists($boushh-bg) {
+@if variable-exists(boushh-bg) {
   $exo-bg: $boushh-bg;
 }
-@if variable-exists($boushh-bg-alt) {
+@if variable-exists(boushh-bg-alt) {
   $exo-bg-alt: $boushh-bg-alt;
 }
-@if variable-exists($boushh-primary) {
+@if variable-exists(boushh-primary) {
   $exo-primary: $boushh-primary;
 }
-@if variable-exists($boushh-spacing) {
+@if variable-exists(boushh-spacing) {
   $exo-spacing: $boushh-spacing;
 }
