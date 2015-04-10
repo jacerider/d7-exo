@@ -46,6 +46,7 @@ function exo_form_field_form(&$form, &$form_state){
     '#type' => 'checkbox',
     '#title' => t('Use default settings'),
     '#default_value' => isset($instance['settings']['exo']['default']) ? $instance['settings']['exo']['default'] : 1,
+    '#description' => t('Defaults are set via !url.', array('!url' => l('admin/config/content/exo','admin/config/content/exo'))),
     '#states' => array(
       'visible' => array(
         'input[name="instance[settings][exo][status]"]' => array('checked' => TRUE),
