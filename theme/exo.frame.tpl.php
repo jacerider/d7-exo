@@ -13,7 +13,7 @@
       <div id="exo-wrapper">
         <div id="exo-instance">
           <div id="exo-messages"><?php print $messages; ?></div>
-          <div id="exo-content"></div>
+          <div id="exo-content" class="content"></div>
           <a id="exo-finish" href="#" class="exo"><i class="fa fa-save"></i> Finish Editing</a>
         </div>
       </div>

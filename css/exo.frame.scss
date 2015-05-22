@@ -53,6 +53,8 @@
     opacity: 0;
     max-height:100%;
     overflow-y:auto;
+    overflow-x:hidden;
+    background:none;
     @include clearfix();
     @include transform(translateY(-50%) rotateY(0deg));
     @include transform-style(preserve-3d);
@@ -71,6 +73,7 @@
       width: 100%;
       height: 100%;
       cursor: pointer;
+      @include transform(translateZ(0) translateX(0) rotateY(0deg));
       @include backface-visibility(hidden);
 
       > *{
@@ -113,7 +116,7 @@
   #exo-instance{
     @include display(flex);
     @include flex-direction(column);
-    @include flex(auto);
+    @include flex(3);
   }
 
   #exo-content{
@@ -140,11 +143,15 @@
     .cke_contents{
       @include flex(auto);
       height:100% !important;
+      background:#FAFAFA;
     }
 
     .cke_wysiwyg_div{
       max-width:rem-calc(900);
+      padding:rem-calc(20);
       margin:0 auto;
+      background:#fff;
+      box-shadow:0 0 5px #BEBEBE;
     }
   }
 
@@ -164,6 +171,14 @@
       background:#ebeef1;
       color:#5a6274;
     }
+  }
+
+  .ui-widget-overlay{
+    display:none;
+  }
+
+  .ui-dialog-titlebar-close{
+    display:none;
   }
 
   // #exo-content-wrapper{
@@ -197,7 +212,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #exo-sidebar{
-  @include flex(0 0 rem-calc(400));
+  @include flex(1);
+  max-width: rem-calc(400);
 
   .exo-sidebar-item{
 
@@ -210,6 +226,9 @@
       text-transform: uppercase;
       border-top:1px solid lighten($exo-bg-alt, 2%);
       border-bottom:1px solid darken($exo-bg-alt, 2%);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       i{
         @include transition(color 300ms);

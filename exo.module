@@ -36,6 +36,14 @@ function exo_menu(){
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10
   );
+  $items['exo/link'] = array(
+    'page callback' => 'exo_frame_view',
+    'delivery callback' => 'ajax_deliver',
+    'theme callback' => 'ajax_base_page_theme',
+    'access arguments' => array('access content'),
+    'file' => 'includes/exo.link.inc',
+    'type' => MENU_CALLBACK
+  );
   return $items;
 }
 

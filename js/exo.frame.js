@@ -103,9 +103,6 @@ exoFrame._init = function() {
 
   // Fetch resources if needed
   this.resourceFetch(this.ckeditorInit.bind(this));
-
-  // CKEDITOR Init
-  // this.ckeditorInit();
 };
 
 /**
@@ -157,7 +154,8 @@ exoFrame.ckeditorInit = function(){
   CKEDITOR.plugins.addExternal('divarea', Drupal.settings.exoFrame.path + '/ckeditor/divarea/');
   CKEDITOR.plugins.addExternal('widget', Drupal.settings.exoFrame.path + '/ckeditor/widget/');
   CKEDITOR.plugins.addExternal('lineutils', Drupal.settings.exoFrame.path + '/ckeditor/lineutils/');
-  CKEDITOR.config.extraPlugins = 'divarea';
+  CKEDITOR.plugins.addExternal('exoLink', Drupal.settings.exoFrame.path + '/ckeditor/exolink/');
+  CKEDITOR.config.extraPlugins = 'divarea,exoLink';
 
   // ckeditorBefore Hook
   $.exoFrame.ckeditorBefore.forEach(function(func) {
@@ -166,7 +164,7 @@ exoFrame.ckeditorInit = function(){
 
   // CKEDITOR Config
   ckconfig = {
-    toolbar: [["Format"], ["Bold", "Italic", "-", "Link", "Unlink"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]]
+    toolbar: [["Format"], ["Bold", "Italic", "Blockquote", "-", "ExoLink", "Unlink"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]]
   };
 
   target = this.element.get(0);
@@ -185,6 +183,13 @@ exoFrame.ckeditorInit = function(){
     _this.ckeditor.focus();
   });
 };
+
+/**
+ * Get CKEditor instance.
+ */
+exoFrame.ckeditorGet = function(){
+  return this.ckeditor;
+}
 
 /**
  * Initialize sidebar.
@@ -267,8 +272,6 @@ exoFrame.paneHtml = function(html, settings) {
   hasContent = this.$pane.html();
   settings = settings || Drupal.settings;
 
-  // alert('paneHtml');
-
   onTransEnd = function(event){
     if(!event.originalEvent || (event.originalEvent && event.originalEvent.propertyName === 'transform')){
       _this.$pane.off(transEndEventName);
@@ -276,7 +279,14 @@ exoFrame.paneHtml = function(html, settings) {
         Drupal.detachBehaviors(_this.$pane, settings);
       }
       _this.$pane.html(html);
+
       Drupal.attachBehaviors(_this.$pane, settings);
+
+      $('.exo-pane-close', _this.$pane).click(function(event){
+        event.preventDefault();
+        _this.paneHide();
+      });
+
       setTimeout( function() { _this.$pane.removeClass('swap'); }, 25);
     }
   };
@@ -293,7 +303,7 @@ exoFrame.paneHtml = function(html, settings) {
 };
 
 /**
- * Show pane
+ * Hide pane
  */
 exoFrame.paneHide = function() {
   if(exoFrame.paneShown === 1){
@@ -302,9 +312,13 @@ exoFrame.paneHide = function() {
     transEndEventName = this.transEndEventNames[Modernizr.prefixed('transition')];
 
     onTransEnd = function(event){
-      _this.$html.off(transEndEventName);
-      _this.$html.removeClass('animate-pre');
-      _this.$pane.html('');
+      if(!event.originalEvent || (event.originalEvent && event.originalEvent.propertyName === 'transform')){
+        _this.$html.off(transEndEventName);
+        _this.$html.removeClass('animate-pre');
+        // settings = settings || Drupal.settings;
+        // Drupal.detachBehaviors(_this.$pane, settings);
+        _this.$pane.html('');
+      }
     };
     this.$html.on(transEndEventName, onTransEnd);
     this.$html.removeClass('animate');

@@ -93,6 +93,9 @@ exo.enable = function() {
  * Animate into editor.
  */
 exo.swap = function() {
+  // Remove Loader
+  $.exo.$loader.remove();
+  // Animate
   this.animate($.exo.$exo, this.animateIn, this.animateOut);
 }
 
@@ -129,7 +132,6 @@ exo.watch = function() {
   if (this.$frame.length) {
     clearTimeout(this.watchTimer);
     delete this.watchTimer;
-    $.exo.$loader.remove();
     return this.enable();
   } else {
     return this.watchTimer = setTimeout(function() {
