@@ -3,17 +3,17 @@
 function exo_asset_browser($type){
   $asset_type = asset_type_load($type);
 
-  $output = array();
-
   $output['browser'] = asset_type_browser($asset_type, 'asset', TRUE);
-  unset($output['browser']['#attached']['js']);
+  unset($output['browser']['#attached']['js']['browser']);
 
   $output['create']['#markup'] = l('<i class="fa fa-'.$asset_type->data['icon'].'"></i> Create New <strong>' . $asset_type->name . '</strong>', 'exo/asset/' . $asset_type->type, array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-create', 'use-ajax', 'button', 'expand', 'small'))));
 
-  $commands = array();
-  $commands[] = ajax_command_exo_pane(drupal_render($output));
-
-  ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  return array(
+    '#type' => 'ajax',
+    '#commands' =>  array(
+      ajax_command_exo_pane(drupal_render($output))
+    ),
+  );
 }
 
 /**
@@ -44,7 +44,7 @@ function exo_asset_asset_form($form, &$form_state, $asset){
   form_load_include($form_state, 'inc', 'asset', 'includes/asset.admin');
   $form += asset_edit_form($form, $form_state, $asset);
 
-  $form['actions']['cancel']['#markup'] = l('Cancel', 'exo/assets/image', array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-cancel', 'button', 'tiny', 'text', 'use-ajax'))));
+  $form['actions']['cancel']['#markup'] = l('Cancel', 'exo/assets/' . $asset->type, array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-cancel', 'button', 'tiny', 'text', 'use-ajax'))));
 
   $asset_type = $form_state['asset_type'];
   if($asset->id && empty($asset_type->data['require_instance'])){

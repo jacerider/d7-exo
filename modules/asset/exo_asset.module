@@ -23,6 +23,7 @@ function exo_asset_menu(){
       'page arguments' => array($type->type),
       'access callback' => 'asset_access',
       'access arguments' => array('view', $type),
+      'delivery callback' => 'ajax_deliver',
       'theme callback' => 'ajax_base_page_theme',
       'file' => 'includes/exo_asset.page.inc',
       'type' => MENU_CALLBACK
