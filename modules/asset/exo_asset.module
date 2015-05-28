@@ -91,10 +91,50 @@ function exo_asset_exo_frame_resources_alter(&$commands, $context){
 function exo_asset_exo_process_widget_alter(&$element, &$settings, $context){
   $instance = $context['instance'];
   if(!empty($instance['settings']['asset'])){
-    $config = empty($instance['settings']['asset']['default']) ? $instance['settings']['asset']['settings'] : variable_get('asset', array());
+    $config = empty($instance['settings']['asset']['default']) ? $instance['settings']['asset']['settings'] : variable_get('exo', array());
     foreach($config['assets'] as $type => $data){
       $asset_type = asset_type_load($type);
       $settings['assets'][$type] = $asset_type;
     }
   }
+}
+
+/**
+ * Add additional settings to eXo settings form.
+ */
+function exo_asset_exo_settings_form_alter(&$form, $defaults){
+  $asset_types = asset_get_types();
+  $form['assets'] = array(
+    '#type' => 'item',
+    '#title' => t('Enabled Assets'),
+    '#tree' => TRUE,
+    '#element_validate' => array('exo_asset_exo_settings_form_validate')
+  );
+  foreach($asset_types as $bundle => $asset_type){
+    $form['assets'][$bundle] = array(
+      '#type' => 'container',
+      '#tree' => TRUE,
+    );
+    $form['assets'][$bundle]['status'] = array(
+      '#type' => 'checkbox',
+      '#title' => '<i class="fa fa-' . $asset_type->data['icon'] . '"></i> ' . $asset_type->name,
+      '#default_value' => isset($defaults['assets'][$bundle]['status']) ? $defaults['assets'][$bundle]['status'] : 0,
+    );
+  }
+}
+
+/**
+ * Cleanup validation.
+ */
+function exo_asset_exo_settings_form_validate($form, &$form_state){
+  $values = drupal_array_get_nested_value($form_state['values'], $form['#parents']);
+  // $values = &$form_state['values'];
+  if(!empty($values)){
+    foreach($values as $asset_type => $data){
+      if(empty($data['status'])){
+        unset($values[$asset_type]);
+      }
+    }
+  }
+  drupal_array_set_nested_value($form_state['values'], $form['#parents'], $values);
 }

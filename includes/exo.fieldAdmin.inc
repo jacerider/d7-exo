@@ -86,7 +86,7 @@ function exo_form_field_form_submit($form, &$form_state){
  */
 function exo_configuration_form($default_values = array()){
 
-  $exo = array(
+  $form = array(
     '#type' => 'fieldset',
     '#title' => t('Settings'),
     '#collapsible' => FALSE,
@@ -97,14 +97,14 @@ function exo_configuration_form($default_values = array()){
   foreach(filter_formats() as $format){
     if($format->status) $options[$format->format] = $format->name;
   }
-  $exo['text_format'] = array(
+  $form['text_format'] = array(
     '#type' => 'select',
     '#title' => t('Text format'),
     '#options' => $options,
     '#default_value' => isset($default_values['text_format']) ? $default_values['text_format'] : 0,
   );
 
-  drupal_alter('exo_settings_form', $exo, $default_values);
+  drupal_alter('exo_settings_form', $form, $default_values);
 
-  return $exo;
+  return $form;
 }

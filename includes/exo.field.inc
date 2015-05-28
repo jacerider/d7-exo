@@ -31,7 +31,7 @@ function exo_valid($element){
 function exo_field_info_instance($entity_type, $field_name, $bundle){
   $instance = field_info_instance($entity_type, $field_name, $bundle);
   if(!empty($instance['settings']['exo']) && !empty($instance['settings']['exo']['default'])){
-    $instance['settings']['exo']['settings'] = variable_get('exo_defaults', array());
+    $instance['settings']['exo']['settings'] = variable_get('exo', array());
   }
   return $instance;
 }
