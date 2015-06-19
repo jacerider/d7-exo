@@ -104,7 +104,7 @@ exo.swap = function() {
  */
 exo.disable = function() {
   this.element.val(this.content);
-  return this.animate($.exo.$page, this.animateIn, this.animateOut);;
+  return this.animate($.exo.$page, this.animateIn, this.animateOut);
 }
 
 /**
