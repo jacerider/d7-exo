@@ -19,6 +19,8 @@ function exo_element_info_alter(&$types) {
  */
 function exo_valid($element){
   if(!isset($element['#entity_type'])) return FALSE;
+  if(isset($element['#exo_prevent'])) return FALSE;
+  if(exo_prevent(TRUE)) return FALSE;
   $exo = array();
   $exo['field'] = field_info_field($element['#field_name']);
   $exo['instance'] = exo_field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
