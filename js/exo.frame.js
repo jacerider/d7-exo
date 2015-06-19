@@ -178,11 +178,24 @@ exoFrame.ckeditorInit = function(){
       func(_this);
     });
 
+    _this.ckeditorResize();
+    $(window).resize(function() {
+      _this.ckeditorResize();
+    });
+
     // Editor is now setup and loaded. Tell eXo to swap.
     _this.exo.swap();
     _this.ckeditor.focus();
   });
 };
+
+/**
+ * Resize ckeditor for perfect fit.
+ */
+exoFrame.ckeditorResize = function(){
+  var ckeContents = $('.cke_contents');
+  ckeContents.height($('.cke_inner').height() - $('.cke_top').outerHeight() - $('.cke_bottom').outerHeight());
+}
 
 /**
  * Get CKEditor instance.

@@ -140,11 +140,33 @@
       height:100%;
     }
 
-    .cke_contents{
-      @include flex(auto);
-      height:100% !important;
-      background:#FAFAFA;
-    }
+    // .cke_top{
+    //   // position:absolute;
+    //   // top:0;
+    //   // left:0;
+    //   // right:0;
+    //   // z-index:2;
+    //   @include flex(0 0);
+    // }
+
+    // .cke_contents{
+    //   @include flex(auto);
+    //   height:auto !important;
+    //   background:#FAFAFA;
+
+    //   .cke_wysiwyg_div{
+
+    //   }
+    // }
+
+    // .cke_bottom{
+    //   // position:absolute;
+    //   // top:0;
+    //   // left:0;
+    //   // right:0;
+    //   // z-index:2;
+    //   @include flex(0 0);
+    // }
 
     .cke_wysiwyg_div{
       max-width:rem-calc(900);
