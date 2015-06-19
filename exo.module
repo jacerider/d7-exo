@@ -37,7 +37,7 @@ function exo_menu(){
     'weight' => -10
   );
   $items['exo/link'] = array(
-    'page callback' => 'exo_frame_view',
+    'page callback' => 'exo_link_view',
     'delivery callback' => 'ajax_deliver',
     'theme callback' => 'ajax_base_page_theme',
     'access arguments' => array('access content'),
@@ -103,6 +103,17 @@ function exo_frame_add_js($settings = NULL) {
   }
   drupal_add_library('exo', 'exo_frame');
   drupal_add_js(array('exoFrame' => array('path' => base_path() . drupal_get_path('module', 'exo'))), 'setting');
+}
+
+/**
+ * Call at any time to prevent eXo from loading.
+ */
+function exo_prevent($check_only = FALSE){
+  static $once;
+  if(!$check_only && !isset($once)){
+    $once = TRUE;
+  }
+  return $once;
 }
 
 /**
