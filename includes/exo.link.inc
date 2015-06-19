@@ -1,6 +1,6 @@
 <?php
 
-function exo_frame_view(){
+function exo_link_view(){
   $form = drupal_get_form('exo_link_form');
   return array(
     '#type' => 'ajax',
