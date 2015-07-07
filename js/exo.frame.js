@@ -164,7 +164,7 @@ exoFrame.ckeditorInit = function(){
 
   // CKEDITOR Config
   ckconfig = {
-    toolbar: [["Format"], ["Bold", "Italic", "Blockquote", "-", "ExoLink", "Unlink"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"]]
+    toolbar: [["Format"], ["Bold", "Italic", "Blockquote", "-", "ExoLink", "Unlink"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["Source"]]
   };
 
   target = this.element.get(0);
@@ -172,7 +172,6 @@ exoFrame.ckeditorInit = function(){
   this.ckeditor.setData(this.content);
 
   return this.ckeditor.on('loaded', function() {
-
     // ckeditorAfter Hook
     $.exoFrame.ckeditorAfter.forEach(function(func) {
       func(_this);
