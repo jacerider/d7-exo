@@ -3,10 +3,12 @@
   CKEDITOR.plugins.add( 'exoAsset', {
     requires: "widget",
     init: function( editor ) {
-      editor.filter.allow( 'div[data-*,typeof,about](*); img[!src,alt]; iframe[!src,width,height,frameborder]; ul(*); li; style;', 'exoAsset' );
+      editor.filter.allow( 'div[data-*,typeof,about](*); span[data-*,typeof,about](*); img[!src,alt]; iframe[!src,width,height,frameborder]; ul(*); li; style;', 'exoAsset' );
       return editor.widgets.add("exoAsset", {
+        mask: true,
+        // inline: true,
         upcast: function(element) {
-          return element.name === "div" && element.hasClass("entity-asset");
+          return (element.name === "div" || element.name === "span") && element.hasClass("entity-asset");
         },
         edit: function(event) {
 
