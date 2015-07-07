@@ -69,13 +69,23 @@ $.exoFrame.sidebarBefore.push(sidebarBefore);
 
 
 /**
- * EVENT: Run after resources have been included.
+ * EVENT: Run after ckeditor has been initialized.
  */
 
-function resourcesAfter(exoFrame){
+function ckeditorAfter(exoFrame){
+  var editor = exoFrame.ckeditor;
+  editor.on( 'mode', function(){
+    var data = editor.getData();
+    if(editor.mode == 'source'){
+      editor.setData($.asset.toToken(data));
+    }
+    else{
+      editor.setData($.asset.toAsset(data));
+    }
+  });
 };
 
-$.exoFrame.resourcesAfter.push(resourcesAfter);
+$.exoFrame.ckeditorAfter.push(ckeditorAfter);
 
 
 /**
