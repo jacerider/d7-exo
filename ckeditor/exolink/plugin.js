@@ -12,8 +12,18 @@
   CKEDITOR.plugins.add( 'exoLink', {
     requires: "link",
     init: function( editor ) {
+      var allowed = 'a[!href]',
+        required = 'a[href]';
       var version = parseInt(CKEDITOR.version);
+
+      if ( CKEDITOR.dialog.isTabEnabled( editor, 'link', 'advanced' ) )
+        allowed = allowed.replace( ']', ',accesskey,charset,dir,id,lang,name,rel,tabindex,title,type]{*}(*)' );
+      if ( CKEDITOR.dialog.isTabEnabled( editor, 'link', 'target' ) )
+        allowed = allowed.replace( ']', ',target,onclick]' );
+
       editor.addCommand("exoLink", {
+        allowedContent: allowed,
+        requiredContent: required,
         exec: function(editor) {
           if(!Drupal.ajax['exo_link']){
             Drupal.ajax['exo_link'] = new Drupal.ajax(null, jQuery('body'), {
