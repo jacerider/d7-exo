@@ -45,8 +45,8 @@ function exo_asset_menu(){
     'title' => 'Instance Editor',
     'page callback' => 'exo_asset_instance',
     'page arguments' => array(2, 3),
-    'access callback' => 'asset_instance_access',
-    'access arguments' => array('edit', 3),
+    'access callback' => 'asset_access',
+    'access arguments' => array('edit', 2),
       'file' => 'includes/exo_asset.page.inc',
       'type' => MENU_CALLBACK,
   );
@@ -55,8 +55,8 @@ function exo_asset_menu(){
     'title' => 'Instance Editor',
     'page callback' => 'exo_asset_instance',
     'page arguments' => array(2, 3),
-    'access callback' => 'asset_instance_access',
-    'access arguments' => array('edit', 3),
+    'access callback' => 'asset_access',
+    'access arguments' => array('edit', 2),
       'file' => 'includes/exo_asset.page.inc',
       'type' => MENU_CALLBACK,
   );
