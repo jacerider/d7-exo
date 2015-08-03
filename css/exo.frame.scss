@@ -1,4 +1,4 @@
-#exo-html, #exo-body, #exo-perspective {
+#exo-html, #exo-body, #exo-container {
   width: 100%;
   height: 100%;
 }
@@ -14,7 +14,7 @@
     background:$exo-bg;
   }
 
-  #exo-perspective{
+  #exo-container{
     width:100%;
     height:100%;
     position: relative;
@@ -61,8 +61,8 @@
     @include transition(transform 700ms, opacity 700ms);
   }
 
-  &.animate-pre{
-    #exo-perspective{
+  &.exo-animate-pre{
+    #exo-container{
       position: fixed;
       @include perspective(1500px);
     }
@@ -86,7 +86,7 @@
     }
   }
 
-  &.animate{
+  &.exo-animate{
 
     #exo-wrapper{
       @include transform(translateZ(-1500px) translateX(100%) rotateY(-45deg));
@@ -105,7 +105,7 @@
 
   &.no-csstransforms3d {
 
-    &.animate{
+    &.exo-animate{
 
       #exo-wrapper{
         left: 75%;

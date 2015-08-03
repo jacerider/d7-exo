@@ -269,8 +269,8 @@ exoFrame.paneShow = function() {
       _this.paneHide();
     };
 
-    this.$html.addClass('animate-pre');
-    setTimeout( function() { _this.$html.addClass('animate'); }, 25 );
+    this.$html.addClass('exo-animate-pre');
+    setTimeout( function() { _this.$html.addClass('exo-animate'); }, 25 );
     this.$wrapper.bind('click', close);
   }
 };
@@ -326,14 +326,14 @@ exoFrame.paneHide = function() {
     onTransEnd = function(event){
       if(!event.originalEvent || (event.originalEvent && event.originalEvent.propertyName === 'transform')){
         _this.$html.off(transEndEventName);
-        _this.$html.removeClass('animate-pre');
+        _this.$html.removeClass('exo-animate-pre');
         // settings = settings || Drupal.settings;
         // Drupal.detachBehaviors(_this.$pane, settings);
         _this.$pane.html('');
       }
     };
     this.$html.on(transEndEventName, onTransEnd);
-    this.$html.removeClass('animate');
+    this.$html.removeClass('exo-animate');
     this.$wrapper.unbind('click');
   }
 };

@@ -8,7 +8,7 @@
     <?php print $settings; ?>
   </head>
   <body id="exo-body" class="exo-frame-body">
-    <div id="exo-perspective">
+    <div id="exo-container">
       <div id="exo-pane" class="page"></div>
       <div id="exo-wrapper">
         <div id="exo-instance">

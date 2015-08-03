@@ -129,7 +129,7 @@ function exo_library() {
     ),
     'css' => array(
       $path . '/css/exo.variables.scss' => array('type' => 'file','media' => 'screen'),
-      $path . '/css/exo.animations.scss' => array('type' => 'file','media' => 'screen'),
+      // $path . '/css/exo.animations.scss' => array('type' => 'file','media' => 'screen'),
       $path . '/css/exo.core.scss' => array('type' => 'file','media' => 'screen'),
       'http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' => array(
         'type' => 'file',

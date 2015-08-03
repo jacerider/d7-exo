@@ -23,7 +23,7 @@ $.exo = {};
 $.exo.created = 0;
 $.exo.initialized = 0;
 $.exo.$exo; // div#exo
-$.exo.$page; // div#exo-page
+$.exo.$wrapper; // body.exo-wrapper
 $.exo.$main; // iframe#exo-main
 $.exo.$loader; // div#exo-loading
 $.exo.$frame; // frame div#exo-content
@@ -33,14 +33,13 @@ $.exo.$frame; // frame div#exo-content
  */
 var exo = {};
 exo.content = '';
-exo.animateIn = 'pt-page-moveFromLeft pt-page-delay200';
-exo.animateOut = 'pt-page-rotateLeftSideFirst';
-exo.animEndEventNames = {
-  WebkitAnimation: "webkitAnimationEnd",
-  OAnimation: "oAnimationEnd",
-  msAnimation: "MSAnimationEnd",
-  animation: "animationend"
-};
+exo.transEndEventNames = {
+  WebkitTransition : 'webkitTransitionEnd',
+  MozTransition    : 'transitionend',
+  OTransition      : 'oTransitionEnd',
+  msTransition     : 'msTransitionEnd',
+  transition       : 'transitionend'
+}
 exo.options = {
   id: null,
   label: null
@@ -55,9 +54,10 @@ exo._create = function() {
     $.exo.created = 1;
     $('html').addClass('exo-exists');
     return setTimeout(function() {
-      $('body').wrapInner('<div id="exo-page" class="exo-page" />').wrapInner('<div id="exo-wrapper" />');
-      $.exo.$page = $('#exo-page');
-      $.exo.$page.data('originalClassList', $.exo.$page.attr('class')).addClass('exo-page-current');
+      // $('body').wrapInner('<div id="exo-page" class="exo-page" />').wrapInner('<div id="exo-wrapper" />');
+      $.exo.$wrapper = $('body').addClass('exo-wrapper');
+      // $.exo.$page = $('#exo-page');
+      // $.exo.$page.data('originalClassList', $.exo.$page.attr('class')).addClass('exo-page-current');
       return $('html').addClass('exo-created');
     }, 50);
   }
@@ -78,12 +78,12 @@ exo._init = function() {
  * Enable eXo instance and display.
  */
 exo.enable = function() {
+  $.exo.$wrapper.addClass('exo-top');
   if (!$.exo.initialized) {
     return this.initialize();
   }
   else{
     $.exo.options = this.options;
-    // this.animate($.exo.$exo, this.animateIn, this.animateOut);
     this.content = this.element.val();
     return $.exo.$main[0].contentWindow.jQuery.exoFrame.enable(this);
   }
@@ -95,29 +95,39 @@ exo.enable = function() {
 exo.swap = function() {
   // Remove Loader
   $.exo.$loader.remove();
-  // Animate
-  this.animate($.exo.$exo, this.animateIn, this.animateOut);
+  $.exo.$wrapper.addClass('exo-active');
 }
 
 /**
  * Disable eXo instance and remove.
  */
 exo.disable = function() {
+  var transEndEventName;
+  transEndEventName = this.transEndEventNames[Modernizr.prefixed('transition')];
   this.element.val(this.content);
-  return this.animate($.exo.$page, this.animateIn, this.animateOut);
+  $.exo.$wrapper.removeClass('exo-active');
+  $.exo.$exo.on(transEndEventName, this.disableFinish.bind(this));
 }
+
+/**
+ * Animate in has finished.
+ */
+exo.disableFinish = function(event) {
+  var transEndEventName;
+  transEndEventName = this.transEndEventNames[Modernizr.prefixed('transition')];
+  $.exo.$exo.off(transEndEventName);
+  $.exo.$wrapper.removeClass('exo-top');
+};
 
 /**
  * Initialize is called only the first time an eXo editor is requested.
  */
 exo.initialize = function() {
   $.exo.initialized = 1;
-  var $wrapper;
-  $wrapper = $('#exo-wrapper');
   $.exo.$loader = $('<div id="exo-loading"><span class="fa-stack fa-2x"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-cog fa-spin fa-stack-1x fa-inverse"></i></span></div>');
-  $.exo.$loader.appendTo($wrapper);
+  $.exo.$loader.appendTo($.exo.$wrapper);
   $.exo.$exo = $('<div id="exo" class="exo-page" />');
-  $.exo.$exo.data('originalClassList', $.exo.$exo.attr('class')).appendTo($wrapper);
+  $.exo.$exo.data('originalClassList', $.exo.$exo.attr('class')).appendTo($.exo.$wrapper);
   $.exo.$main = $('<iframe id="exo-main" src="/exo/frame"></iframe>');
   $.exo.$main.appendTo($.exo.$exo).wrap('<div id="exo-main-wrapper" />');
   return this.watch();
@@ -146,30 +156,6 @@ exo.watch = function() {
 exo.enableClick = function(event) {
   event.preventDefault();
   return this.enable();
-};
-
-/**
- * Animate element in.
- */
-exo.animate = function($selector, animateIn, animateOut) {
-  var animEndEventName;
-  animEndEventName = this.animEndEventNames[Modernizr.prefixed('animation')];
-  $.exo.$exo.on(animEndEventName, this.animateFinish.bind(this));
-  $selector.addClass('exo-page-current exo-page-ontop exo-focus ' + animateIn);
-  return $('.exo-page:not(.exo-focus)').addClass(animateOut);
-};
-
-/**
- * Animate in has finished.
- */
-exo.animateFinish = function(event) {
-  var $in, $out, animEndEventName;
-  animEndEventName = this.animEndEventNames[Modernizr.prefixed('animation')];
-  $.exo.$exo.off(animEndEventName);
-  $out = $('.exo-page:not(.exo-focus)');
-  $out.attr('class', $out.data('originalClassList'));
-  $in = $('.exo-focus');
-  return $in.attr('class', $in.data('originalClassList') + ' exo-page-current');
 };
 
 /**
