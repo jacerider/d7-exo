@@ -56,7 +56,7 @@ function exo_process_widget(&$element) {
 
     $element['#id'] = $selector;
     $element['#attributes']['class'][] = 'exo-textarea';
-    $element['#title'] = '';
+    // $element['#title'] = '';
     $element['#resizable'] = FALSE;
 
     $id = $vid = $bundle = NULL;
