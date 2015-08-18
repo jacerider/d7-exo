@@ -8,22 +8,19 @@
         mask: true,
         // inline: true,
         upcast: function(element) {
-          return (element.name === "div" || element.name === "span") && element.hasClass("entity-asset");
+          return (element.name === "div" || element.name === "span") && element.attributes['data-aid'];
         },
         edit: function(event) {
-
           $wrapper = jQuery(event.sender.wrapper.$);
-          $element = jQuery('.entity-asset', $wrapper).first();
+          $element = jQuery('*[data-aid]', $wrapper).first();
           aid = $element.attr('data-aid');
           iid = $element.attr('data-iid');
-
           Drupal.ajax['asset_browser'] = new Drupal.ajax(null, jQuery('body'), {
             url: Drupal.settings.basePath + 'exo/asset/' + aid + '/' + iid,
             event: 'onload',
             keypress: false,
             prevent: false
           });
-
           return Drupal.ajax['asset_browser'].run();
         }
       });
