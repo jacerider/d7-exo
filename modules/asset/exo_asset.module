@@ -29,7 +29,7 @@ function exo_asset_menu(){
       'type' => MENU_CALLBACK
     );
     $items['exo/asset/' . $type->type] = array(
-      'title' => 'Add ' . $type->name,
+      'title' => 'Add ' . $type->title,
       'page callback' => 'exo_asset_edit',
       'page arguments' => array(2),
       'access callback'  => 'asset_access',
@@ -119,7 +119,7 @@ function exo_asset_exo_settings_form_alter(&$form, $defaults){
     );
     $form['assets'][$bundle]['status'] = array(
       '#type' => 'checkbox',
-      '#title' => '<i class="fa fa-' . $asset_type->data['icon'] . '"></i> ' . $asset_type->name,
+      '#title' => '<i class="fa fa-' . $asset_type->data['icon'] . '"></i> ' . $asset_type->title,
       '#default_value' => isset($defaults['assets'][$bundle]['status']) ? $defaults['assets'][$bundle]['status'] : 0,
     );
   }

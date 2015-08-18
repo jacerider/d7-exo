@@ -6,7 +6,11 @@ function exo_asset_browser($type){
   $output['browser'] = asset_type_browser($asset_type, 'asset', TRUE);
   unset($output['browser']['#attached']['js']['browser']);
 
-  $output['create']['#markup'] = l('<i class="fa fa-'.$asset_type->data['icon'].'"></i> Create New <strong>' . $asset_type->name . '</strong>', 'exo/asset/' . $asset_type->type, array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-create', 'use-ajax', 'button', 'expand', 'small'))));
+  $output['create']['#markup'] = l('<i class="fa fa-'.$asset_type->data['icon'].'"></i> Create New <strong>' . $asset_type->title . '</strong>', 'exo/asset/' . $asset_type->type, array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-create', 'use-ajax', 'button', 'expand', 'small'))));
+
+  // Make sure any additional CSS is thrown out as everything has already been
+  // loaded by parent frame.
+  // drupal_static_reset('drupal_add_css');
 
   return array(
     '#type' => 'ajax',
