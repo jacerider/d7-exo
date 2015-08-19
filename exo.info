@@ -1,7 +1,7 @@
 name        = eXo
 description = A wysiwyg editor of awesomeness.
 package     = eXo
-version     = 7.x-2.0
+version     = 7.x-3.x-dev
 core        = 7.x
 
 dependencies[] = libraries
