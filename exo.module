@@ -125,6 +125,7 @@ function exo_library() {
     'title' => 'eXo',
     'version' => '0.1',
     'js' => array(
+      $path.'/js/modernizr.js' => array('weight'=>-1000),
       $path.'/js/exo.js' => array('scope'=>'footer'),
     ),
     'css' => array(
@@ -154,14 +155,14 @@ function exo_library() {
       )
     )
   );
-  $themes = list_themes();
-  if(isset($themes['boushh'])){
-    $theme = $themes['boushh'];
-    $libraries['exo_frame']['css'][drupal_get_path('theme', 'boushh') . '/assets/scss/libraries/_variables.scss'] = array('type' => 'file','media' => 'screen','weight' => -1100);
-    foreach($theme->stylesheets['all'] as $relative_path => $filepath){
-      $libraries['exo_frame']['css'][$filepath] = array('type' => 'file','media' => 'screen');
-    }
-  }
+  // $themes = list_themes();
+  // if(isset($themes['boushh'])){
+  //   $theme = $themes['boushh'];
+  //   $libraries['exo_frame']['css'][drupal_get_path('theme', 'boushh') . '/assets/scss/libraries/_variables.scss'] = array('type' => 'file','media' => 'screen','weight' => -1100);
+  //   foreach($theme->stylesheets['all'] as $relative_path => $filepath){
+  //     $libraries['exo_frame']['css'][$filepath] = array('type' => 'file','media' => 'screen');
+  //   }
+  // }
   if(!module_exists('ckeditor')){
     $libraries['ckeditor'] = array(
       'title' => 'CKEditor',
@@ -175,20 +176,20 @@ function exo_library() {
   return $libraries;
 }
 
-/**
- * Implements hook_sonar_var_alter().
- */
-function exo_sonar_var_alter(&$vars){
-  if(arg(0) === 'exo'){
-    $settings = variable_get('theme_'.variable_get('admin_theme').'_settings', '');
-    if(isset($settings['boushh_bg'])){
-      $vars['boushh-bg'] = $settings['boushh_bg'];
-    }
-    if(isset($settings['boushh_primary'])){
-      $vars['boushh-primary'] = $settings['boushh_primary'];
-    }
-  }
-}
+// /**
+//  * Implements hook_sonar_var_alter().
+//  */
+// function exo_sonar_var_alter(&$vars){
+//   if(arg(0) === 'exo'){
+//     $settings = variable_get('theme_'.variable_get('admin_theme').'_settings', '');
+//     if(isset($settings['boushh_bg'])){
+//       $vars['boushh-bg'] = $settings['boushh_bg'];
+//     }
+//     if(isset($settings['boushh_primary'])){
+//       $vars['boushh-primary'] = $settings['boushh_primary'];
+//     }
+//   }
+// }
 
 /**
  * Insert HTML into eXo editor.
