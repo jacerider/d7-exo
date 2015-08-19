@@ -54,10 +54,7 @@ exo._create = function() {
     $.exo.created = 1;
     $('html').addClass('exo-exists');
     return setTimeout(function() {
-      // $('body').wrapInner('<div id="exo-page" class="exo-page" />').wrapInner('<div id="exo-wrapper" />');
       $.exo.$wrapper = $('body').addClass('exo-wrapper');
-      // $.exo.$page = $('#exo-page');
-      // $.exo.$page.data('originalClassList', $.exo.$page.attr('class')).addClass('exo-page-current');
       return $('html').addClass('exo-created');
     }, 50);
   }
