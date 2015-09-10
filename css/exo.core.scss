@@ -1,8 +1,8 @@
 @import 'bourbon';
 
 html.exo-exists{
-  height:100%;
-  width:100%;
+  // height:100%;
+  // width:100%;
 
   &.exo-created{
     // body{
@@ -10,10 +10,10 @@ html.exo-exists{
     // }
   }
 
-  body{
-    height:100%;
-    width:100%;
-  }
+  // body{
+  //   height:100%;
+  //   width:100%;
+  // }
 
   #exo-loading{
     background: rgba(#000, .3);
@@ -88,7 +88,7 @@ html.exo-exists{
   // @include sans-condensed();
   display:block;
   background:$exo-bg;
-  padding:5px;
+  padding:5px 10px;
 
   &:hover{
     text-decoration: none;
