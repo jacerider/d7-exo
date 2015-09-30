@@ -32,8 +32,14 @@ function exo_valid($element){
  */
 function exo_field_info_instance($entity_type, $field_name, $bundle){
   $instance = field_info_instance($entity_type, $field_name, $bundle);
-  if(!empty($instance['settings']['exo']) && !empty($instance['settings']['exo']['default'])){
-    $instance['settings']['exo']['settings'] = variable_get('exo', array());
+  if(!empty($instance['settings']['exo'])){
+    if(!empty($instance['settings']['exo']['default'])){
+      $instance['settings']['exo']['settings'] = exo_defaults();
+    }
+    foreach($instance['settings']['exo']['settings']['toolbar'] as &$items){
+      $items = array_values($items);
+    }
+    $instance['settings']['exo']['settings']['toolbar'] = array_values($instance['settings']['exo']['settings']['toolbar']);
   }
   return $instance;
 }
@@ -71,6 +77,7 @@ function exo_process_widget(&$element) {
       'id' => $id,
       'bundle' => $bundle,
       'field_name' => $element['#field_name'],
+      'toolbar' => $instance['settings']['exo']['settings']['toolbar'],
       'delta' => $element['#delta']
     );
 

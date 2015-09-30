@@ -6,8 +6,7 @@
 function exo_settings($form, $form_state) {
   module_load_include('inc', 'exo', 'includes/exo.fieldAdmin');
 
-  // $exo = exo_configuration_form(variable_get('exo'));
-  $form['exo'] = exo_configuration_form(variable_get('exo'));
+  $form['exo'] = exo_configuration_form();
 
   $form['exo']['#title'] = 'Editor default settings';
   $form['exo']['#tree'] = TRUE;

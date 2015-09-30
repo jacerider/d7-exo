@@ -164,8 +164,10 @@ exoFrame.ckeditorInit = function(){
 
   // CKEDITOR Config
   ckconfig = {
-    toolbar: [["Format"], ["Bold", "Italic", "Blockquote", "-", "ExoLink", "Unlink"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["NumberedList", "BulletedList", "HorizontalRule"], ["Source"]],
-    format_tags: 'p;h2;h3;h4;h5;h6;pre;address;div'
+    // toolbar: [["Format"], ["Bold", "Italic", "Blockquote", "-", "ExoLink", "Unlink"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], ["NumberedList", "BulletedList", "HorizontalRule"], ["Source"]],
+    toolbar: this.options.toolbar,
+    format_tags: 'p;h2;h3;h4;h5;h6;pre;address;div',
+    disableNativeSpellChecker: false
   };
 
   target = this.element.get(0);

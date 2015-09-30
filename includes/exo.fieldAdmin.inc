@@ -87,7 +87,7 @@ function exo_form_field_form_submit($form, &$form_state){
  * Settings form for eXo.
  */
 function exo_configuration_form($default_values = array()){
-
+  $default_values += exo_defaults();
   $form = array(
     '#type' => 'fieldset',
     '#title' => t('Settings'),
@@ -103,10 +103,73 @@ function exo_configuration_form($default_values = array()){
     '#type' => 'select',
     '#title' => t('Text format'),
     '#options' => $options,
-    '#default_value' => isset($default_values['text_format']) ? $default_values['text_format'] : 0,
+    '#default_value' => $default_values['text_format'],
   );
+
+  $toolbar_items = exo_toolbar_options();
+  $toolbar_elements = array();
+  foreach($toolbar_items as $key => $items){
+    $toolbar_elements[$key] = array(
+      '#tree' => true,
+      '#type' => 'container',
+      '#attributes' => array('class' => array('toolbar-items')),
+      '#attached' => array(
+        'css' => array(
+          drupal_get_path('module', 'exo') . '/css/exo.settings.scss',
+        ),
+      ),
+    );
+
+    foreach($items as $item => $label){
+      if($label == '-'){
+        $toolbar_elements[$key][] = array(
+          '#type' => 'value',
+          '#value' => $label,
+        );
+      }
+      else{
+        $toolbar_elements[$key][$item] = array(
+          '#type' => 'checkbox',
+          '#title' => $label,
+          '#default_value' => isset($default_values['toolbar'][$key][$item]),
+          '#return_value' => $item,
+        );
+      }
+    }
+  }
+
+  $form['toolbar'] = $toolbar_elements;
+  $form['toolbar']['#title'] = t('Toolbar');
+  $form['toolbar']['#tree'] = true;
+  $form['toolbar']['#prefix'] = '<div class="form-item"><label class="">Toolbar</label>';
+  $form['toolbar']['#suffix'] = '</div>';
+  $form['toolbar']['#type'] = 'container';
+  $form['toolbar']['#attributes'] = array('class' => array('toolbar-items-wrapper'));
+  $form['toolbar']['#element_validate'][] = 'exo_configuration_form_toolbar_items_validate';
 
   drupal_alter('exo_settings_form', $form, $default_values);
 
   return $form;
+}
+
+/**
+ * Validate the toolbar item values and clean them before being saved.
+ */
+function exo_configuration_form_toolbar_items_validate($element, &$form_state){
+  $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  foreach($values as $key => &$value){
+    $value = array_filter($value);
+    if(!empty($value) && $value[key($value)] == '-'){
+      unset($value[key($value)]);
+    }
+    end($value);
+    if(!empty($value) && $value[key($value)] == '-'){
+      unset($value[key($value)]);
+    }
+    // $value = array_values($value);
+    if(empty($value)){
+      unset($values[$key]);
+    }
+  }
+  drupal_array_set_nested_value($form_state['values'], $element['#parents'], $values);
 }

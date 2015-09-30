@@ -91,7 +91,8 @@ function exo_asset_exo_frame_resources_alter(&$commands, $context){
 function exo_asset_exo_process_widget_alter(&$element, &$settings, $context){
   $instance = $context['instance'];
   if(!empty($instance['settings']['asset'])){
-    $config = empty($instance['settings']['asset']['default']) ? $instance['settings']['asset']['settings'] : variable_get('exo', array());
+    $config = $instance['settings']['exo']['settings'];
+    $settings['assets'] = array();
     if(!empty($config['assets'])){
       foreach($config['assets'] as $type => $data){
         $asset_type = asset_type_load($type);

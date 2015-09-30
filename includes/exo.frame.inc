@@ -29,6 +29,9 @@ function exo_deliver_html_page($page) {
  */
 function exo_frame_resources($entity_type, $entity_id, $field_name, $delta){
   exo_frame_add_js();
+  // Remove any CSS loaded before this point to speed up this request. Any CSS
+  // that needs to be loaded will be added after this point.
+  drupal_static_reset('drupal_add_css');
   $commands = array();
   $context = array(
     'entity_type' => $entity_type,
