@@ -88,7 +88,7 @@ html.exo-exists{
   // @include sans-condensed();
   display:block;
   background:$exo-bg;
-  padding:5px 10px;
+  padding:5px;
 
   &:hover{
     text-decoration: none;
@@ -100,11 +100,11 @@ html.exo-exists{
 
   span{
     display:block;
-    font-size:rem-calc(18);
-    line-height:rem-calc(18);
+    font-size:15px;
+    line-height:15px;
     color:#f0f0f0;
     // background:$exo-bg-alt;
-    padding:rem-calc($exo-spacing);
+    padding:$exo-spacing/2;
     @include transition(background 500ms);
   }
 }

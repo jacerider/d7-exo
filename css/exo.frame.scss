@@ -46,7 +46,7 @@
 
   #exo-pane{
     position: absolute;
-    left: rem-calc(30);
+    left: 30px;
     right: 26%;
     height: auto;
     top: 50%;
@@ -169,8 +169,8 @@
     // }
 
     .cke_wysiwyg_div{
-      max-width:rem-calc(900);
-      padding:rem-calc(20);
+      max-width:900px;
+      padding:20px;
       margin:0 auto;
       background:#fff;
       box-shadow:0 0 5px #BEBEBE;
@@ -235,13 +235,13 @@
 
 #exo-sidebar{
   @include flex(1);
-  max-width: rem-calc(400);
+  max-width: 400px;
 
   .exo-sidebar-item{
 
     > a{
       display:block;
-      padding:rem-calc(20 20 20 0);
+      padding:20px 20px 20px 0;
       @include transition(background 300ms, border-color 300ms);
       color:#fff;
       background:$exo-bg-alt;
@@ -254,7 +254,7 @@
 
       i{
         @include transition(color 300ms);
-        width:rem-calc(60);
+        width:60px;
         text-align: center;
         color:$exo-primary;
       }
@@ -285,6 +285,14 @@
     label{
       color:#fff;
     }
+
+    .explode{
+
+      > .form-item{
+        display:inline-block;
+        padding-right:8px;
+      }
+    }
   }
 
   .row{
@@ -293,11 +301,27 @@
 
   .exo-asset-create{
     display:block;
-    margin-top:rem-calc($exo-spacing);
+    margin-top:$exo-spacing;
   }
 
   .views-exposed-form{
     margin:0 !important;
+
+    .views-exposed-widget{
+      display:inline-block;
+      vertical-align: bottom;
+    }
+
+    input,button{
+      margin:0;
+    }
+
+    button{
+      font-size:13px;
+      text-transform: uppercase;
+      line-height:19.5px;
+      padding:9px 16px;
+    }
   }
 
   &.swap{
