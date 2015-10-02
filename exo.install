@@ -1,0 +1,81 @@
+<?php
+/**
+ * @file
+ * Install functions for the eXo module
+ */
+
+/**
+ * Implements hook_install().
+ */
+function exo_install() {
+
+  if(!image_style_load('content_full')){
+    $style = image_style_save(array(
+      'name' => 'content_full',
+      'label' => 'CONTENT | Full Width')
+    );
+    $effect = array(
+      'name' => 'image_scale',
+      'data' => array(
+        'width' => 1000,
+        'height' => '',
+        'upscale' => TRUE,
+      ),
+      'isid' => $style['isid'],
+    );
+    image_effect_save($effect);
+  }
+
+  if(!image_style_load('content_half')){
+    $style = image_style_save(array(
+      'name' => 'content_half',
+      'label' => 'CONTENT | Half Width')
+    );
+    $effect = array(
+      'name' => 'image_scale',
+      'data' => array(
+        'width' => 500,
+        'height' => '',
+        'upscale' => TRUE,
+      ),
+      'isid' => $style['isid'],
+    );
+    image_effect_save($effect);
+  }
+
+  if(!image_style_load('content_quarter')){
+    $style = image_style_save(array(
+      'name' => 'content_quarter',
+      'label' => 'CONTENT | Quarter Width')
+    );
+    $effect = array(
+      'name' => 'image_scale',
+      'data' => array(
+        'width' => 250,
+        'height' => '',
+        'upscale' => TRUE,
+      ),
+      'isid' => $style['isid'],
+    );
+    image_effect_save($effect);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function exo_uninstall() {
+  variable_del('exo');
+  db_query("DELETE FROM {variable} WHERE name LIKE 'exo_%'");
+
+  // Remove image style
+  if($style = image_style_load('content_full')){
+    image_style_delete($style);
+  }
+  if($style = image_style_load('content_half')){
+    image_style_delete($style);
+  }
+  if($style = image_style_load('content_quarter')){
+    image_style_delete($style);
+  }
+}
