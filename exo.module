@@ -262,3 +262,58 @@ function ajax_command_exo_pane($html, $settings = NULL) {
     'settings' => $settings,
   );
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Images
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function exo_image_default_styles() {
+  $styles = array();
+  $styles['content_full'] = array(
+    'label' => 'CONTENT | Full Width',
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 1000,
+          'height' => '',
+          'upscale' => TRUE,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  $styles['content_half'] = array(
+    'label' => 'CONTENT | Half Width',
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 500,
+          'height' => '',
+          'upscale' => TRUE,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  $styles['content_quarter'] = array(
+    'label' => 'CONTENT | Quarter Width',
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 250,
+          'height' => '',
+          'upscale' => TRUE,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+  return $styles;
+}
