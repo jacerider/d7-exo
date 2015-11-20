@@ -39,6 +39,7 @@
       height: 0px;
       opacity: 0;
       background: rgba(0,0,0,0.2);
+      z-index:1000;
       /* the transition delay of the height needs to be synced with the container transition time */
       @include transition(opacity 700ms, height 0s 700ms);
     }
@@ -291,6 +292,75 @@
       > .form-item{
         display:inline-block;
         padding-right:8px;
+      }
+    }
+
+    .tabledrag-toggle-weight-wrapper{
+      display:none;
+      float:right;
+      font-size:9px;
+      text-transform: uppercase;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      border:none;
+      background:none;
+
+      thead{
+        background:none;
+      }
+
+      th{
+        font-weight:bold;
+        text-transform: uppercase;
+      }
+
+      th,
+      td{
+        border:none;
+        padding:5px;
+        background:none;
+      }
+
+      tr,
+      tr.odd,
+      tr.even{
+        border:none;
+        background: none;
+
+        td:last-child,
+        td.menu-operations{
+          border:none;
+          text-align: right;
+        }
+      }
+
+      .field-multiple-drag{
+        width: 23px;
+      }
+
+      a.tabledrag-handle{
+        cursor: move;
+        float: left;
+        height: 1.7em;
+        margin-left: -1em;
+        overflow: hidden;
+        text-decoration: none;
+
+        .handle {
+          background: transparent url("/misc/draggable.png") no-repeat scroll 6px 9px;
+          height: 23px;
+          margin: -0.4em 0.5em;
+          padding: 0.42em 0.5em;
+          width: 23px;
+        }
+      }
+
+      input,
+      textarea{
+        margin:0;
       }
     }
   }
