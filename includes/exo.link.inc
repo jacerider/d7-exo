@@ -27,9 +27,18 @@ function exo_link_form($form, &$form_state){
     '#type' => 'textfield',
     '#title' => t('URL for the link'),
     '#size' => 60,
-    '#maxlength' => 128,
+    '#maxlength' => 256,
     '#attributes' => array('class'=>array('input-block-level'),'data-type'=>'raw'),
     '#id' => 'exo-link-web',
+  );
+
+  $linkClasses = array(
+    'button' => t('Display as Button')
+  );
+  $form['class'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $linkClasses,
+    '#id' => 'exo-link-class',
   );
 
   if(module_exists('linkit')){
@@ -46,34 +55,25 @@ function exo_link_form($form, &$form_state){
       // Set the field ID.
       $field_id = $element['#id'];
 
-      $field_js = array(
-        'data' => array(
-          'linkit' => array(
-            'fields' => array(
-              $field_id => array(
-                'profile' => $profile->name,
-                'insert_plugin' => $profile->data['insert_plugin']['plugin'],
-                'url_method' => $profile->data['insert_plugin']['url_method'],
-                // @TODO: Add autocomplete settings.
-              ),
-            ),
-          ),
-        ),
-        'type' => 'setting',
+      $js_settings = array(
+        'helper' => 'field',
+        'source' => $field_id,
+        'profile' => $profile->name,
+        'insertPlugin' => $profile->data['insert_plugin']['plugin'],
       );
-
-      // Link fields can have a title field.
-      if ($element['#type'] == 'link_field') {
-        if (isset($instance['settings']['title']) && in_array($instance['settings']['title'], array('optional', 'required'))) {
-          $field_js['data']['linkit']['fields'][$field_id]['title_field'] = $element['#id'] . '-title';
-        }
-      }
 
       // Attach js files and settings Linkit needs.
       $element['#attached']['library'][] = array('linkit', 'base');
       $element['#attached']['library'][] = array('linkit', 'field');
       $element['#attached']['js'][] = $insert_plugin['javascript'];
-      $element['#attached']['js'][] = $field_js;
+      // $element['#attached']['js'][] = $field_js;
+
+      $element['#attached']['js'][] = array(
+        'type' => 'setting',
+        'data' => array(
+          'linkit' => array('fields' => array($js_settings)),
+        ),
+      );
 
       $button_text = !empty($instance['settings']['linkit']['button_text']) ? $instance['settings']['linkit']['button_text'] : t('Search Local Content');
       $element['#field_suffix'] = '<a class="button tiny expand secondary linkit-field-button linkit-field-' . $field_id . '" href="#"><i class="fa fa-search"></i> ' . $button_text . '</a>';

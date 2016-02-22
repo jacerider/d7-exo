@@ -71,6 +71,7 @@
     submit = jQuery('.exo-link-save', form).removeClass('form-submit');
     title = jQuery('#exo-link-title', form);
     web = jQuery('#exo-link-web', form);
+    linkClass = jQuery('#edit-class-button', form);
     newWindow = jQuery('#exo-link-new', form);
     defaultUrl = 'http://';
     selection = editor.getSelection();
@@ -88,6 +89,9 @@
       title.val($selected.text());
       if($selected.attr('target') == '_blank'){
         newWindow.prop('checked', true);
+      }
+      if($selected.hasClass('button')){
+        linkClass.prop('checked', true);
       }
       web.focus();
       web.val($selected.attr('href'));
@@ -110,6 +114,10 @@
         attributes: []
       };
       data.attributes["data-cke-saved-href"] = data.path;
+      data.attributes.class = null;
+      if (linkClass.is(":checked")){
+        data.attributes.class = 'button';
+      }
       data.attributes.target = null;
       if (newWindow.is(":checked")){
         data.attributes.target = '_blank';
