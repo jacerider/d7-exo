@@ -33,7 +33,14 @@
               prevent: false
             });
           }
-          return Drupal.ajax['exo_link'].run();
+          var selection = editor.getSelection();
+          if(selection.getSelectedText() === null){
+            alert('No text has been selected. If you are trying to link an asset, please double-click the asset to add a link.');
+            return false;
+          }
+          else{
+            return Drupal.ajax['exo_link'].run();
+          }
         }
       });
       editor.ui.addButton('ExoLink', {
