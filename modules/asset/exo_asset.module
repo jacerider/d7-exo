@@ -80,7 +80,7 @@ function exo_asset_exo_frame_resources_alter(&$commands, $context){
   if($entity = entity_load($entity_type, array($entity_id))){
     $field = field_get_items($entity_type, reset($entity), $field_name);
     foreach(asset_token_find($field[$delta]['value']) as $id => $data){
-      asset_load_js($data['aid'], $data['iid'], 'asset', TRUE);
+      asset_load_js($data['aid'], $data['iid'], 'embed', TRUE);
     }
   }
 }
