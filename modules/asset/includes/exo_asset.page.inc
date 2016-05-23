@@ -74,8 +74,8 @@ function exo_asset_asset_form_ajax_submit($form, &$form_state){
 
   // Clear the asset cache so assets get loaded with updated information.
   entity_get_controller('asset')->resetCache();
-  $asset = asset_load_js($asset->id, NULL, 'asset', TRUE);
-  $output = asset_render($asset, 'asset', TRUE);
+  $asset = asset_load_js($asset->id, NULL, 'embed', TRUE);
+  $output = asset_render($asset, 'embed', TRUE);
 
   $commands = array();
   $commands[] = ajax_command_exo_html(drupal_render($output));
@@ -141,8 +141,8 @@ function exo_asset_instance_form_ajax_submit($form, &$form_state){
 
   // Clear the asset cache so assets get loaded with updated information.
   entity_get_controller('asset')->resetCache();
-  $asset = asset_load_js($asset->id, $instance->id, 'asset', TRUE);
-  $output = asset_render($asset, 'asset', TRUE);
+  $asset = asset_load_js($asset->id, $instance->id, 'embed', TRUE);
+  $output = asset_render($asset, 'embed', TRUE);
 
   $commands = array();
   $commands[] = ajax_command_exo_html(drupal_render($output));
