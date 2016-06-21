@@ -137,14 +137,14 @@ function exo_defaults(){
  */
 function exo_toolbar_options(){
   return array(
-    0 => array('Format'=>'Format','Styles'=>'Styles'),
-    1 => array('Bold'=>'Bold','Italic'=>'Italic','Underline'=>'Underline','-','Strike'=>'Strike','Subscript'=>'Subscript','Superscript'=>'Superscript','RemoveFormat'=>'Remove Format'),
+    0 => array('Format'=>'Format','Styles'=>'Styles','Font'=>'Font','FontSize'=>'Font Size'),
+    1 => array('Bold'=>'Bold','Italic'=>'Italic','Underline'=>'Underline','-','TextColor'=>'Text Color','BGColor'=>'Background Color','-','Strike'=>'Strike','Subscript'=>'Subscript','Superscript'=>'Superscript','RemoveFormat'=>'Remove Format'),
     2 => array('ExoLink'=>'Link','Unlink'=>'Unlink'),
     3 => array('JustifyLeft'=>'Justify Left','JustifyCenter'=>'Justify Center','JustifyRight'=>'Justify Right','JustifyBlock'=>'Justify Block'),
     4 => array('NumberedList'=>'Numbered List','BulletedList'=>'Bulleted List','Outdent'=>'Outdent','Indent'=>'Indent','Blockquote'=>'Blockquote','HorizontalRule'=>'Horizontal Rule'),
     5 => array('Cut'=>'Cut','Copy'=>'Copy','Paste'=>'Paste','PasteText'=>'Paste Text','PasteFromWord'=>'Paste From Word','Undo'=>'Undo','Redo'=>'Redo'),
     6 => array('Find'=>'Find','Replace'=>'Replace','SelectAll'=>'Select All'),
-    7 => array('Table'=>'Table','Iframe'=>'iFrame'),
+    7 => array('Table'=>'Table','Iframe'=>'iFrame','Smiley'=>'Smiley'),
     8 => array('Source'=>'Source','ShowBlocks'=>'Show Blocks'),
   );
 }
