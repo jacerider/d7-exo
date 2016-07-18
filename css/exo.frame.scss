@@ -60,6 +60,11 @@
     @include transform(translateY(-50%) rotateY(0deg));
     @include transform-style(preserve-3d);
     @include transition(transform 700ms, opacity 700ms);
+
+    fieldset {
+      background: #fff;
+      border: 0;
+    }
   }
 
   &.exo-animate-pre{
