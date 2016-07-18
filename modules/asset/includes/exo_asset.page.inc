@@ -3,14 +3,19 @@
 function exo_asset_browser($type){
   $asset_type = asset_type_load($type);
 
-  $output['browser'] = asset_type_browser($asset_type, 'asset', TRUE);
-  unset($output['browser']['#attached']['js']['browser']);
+  if ($asset_type->data['no_multiple']) {
+    $output = exo_asset_edit($type, 0, FALSE);
+  }
+  else {
+    $output['browser'] = asset_type_browser($asset_type, 'asset', TRUE);
+    unset($output['browser']['#attached']['js']['browser']);
 
-  $output['create']['#markup'] = l('<i class="fa fa-'.$asset_type->data['icon'].'"></i> Create New <strong>' . $asset_type->title . '</strong>', 'exo/asset/' . $asset_type->type, array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-create', 'use-ajax', 'button', 'expand', 'small'))));
+    $output['create']['#markup'] = l('<i class="fa fa-'.$asset_type->data['icon'].'"></i> Create New <strong>' . $asset_type->title . '</strong>', 'exo/asset/' . $asset_type->type, array('html' => TRUE, 'attributes' => array('class' => array('exo-asset-create', 'use-ajax', 'button', 'expand', 'small'))));
 
-  // Make sure any additional CSS is thrown out as everything has already been
-  // loaded by parent frame.
-  // drupal_static_reset('drupal_add_css');
+    // Make sure any additional CSS is thrown out as everything has already been
+    // loaded by parent frame.
+    // drupal_static_reset('drupal_add_css');
+  }
 
   return array(
     '#type' => 'ajax',
@@ -23,7 +28,7 @@ function exo_asset_browser($type){
 /**
  * Asset creation and editing.
  */
-function exo_asset_edit($asset, $instance = 0){
+function exo_asset_edit($asset, $instance = 0, $deliver = TRUE){
   if(!is_a($asset, 'Asset')){
     $asset = asset_create(array('type' => $asset));
   }
@@ -37,7 +42,9 @@ function exo_asset_edit($asset, $instance = 0){
 
   $output['form'] = drupal_get_form('exo_asset_asset_form', $asset);
 
-  // return $output;
+  if (!$deliver) {
+    return $output;
+  }
 
   $commands = array();
   $commands[] = ajax_command_exo_pane(drupal_render($output));
@@ -74,8 +81,9 @@ function exo_asset_asset_form_ajax_submit($form, &$form_state){
 
   // Clear the asset cache so assets get loaded with updated information.
   entity_get_controller('asset')->resetCache();
-  $asset = asset_load_js($asset->id, NULL, 'embed', TRUE);
-  $output = asset_render($asset, 'embed', TRUE);
+  $display_mode = exo_asset_display_mode($asset->type);
+  $asset = asset_load_js($asset->id, NULL, $display_mode, TRUE);
+  $output = asset_render($asset, $display_mode, TRUE);
 
   $commands = array();
   $commands[] = ajax_command_exo_html(drupal_render($output));
@@ -141,8 +149,9 @@ function exo_asset_instance_form_ajax_submit($form, &$form_state){
 
   // Clear the asset cache so assets get loaded with updated information.
   entity_get_controller('asset')->resetCache();
-  $asset = asset_load_js($asset->id, $instance->id, 'embed', TRUE);
-  $output = asset_render($asset, 'embed', TRUE);
+  $display_mode = exo_asset_display_mode($asset->type);
+  $asset = asset_load_js($asset->id, $instance->id, $display_mode, TRUE);
+  $output = asset_render($asset, $display_mode, TRUE);
 
   $commands = array();
   $commands[] = ajax_command_exo_html(drupal_render($output));

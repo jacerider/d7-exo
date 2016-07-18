@@ -65,6 +65,16 @@ function exo_asset_menu(){
 }
 
 /**
+ * Implements hook_entity_info_alter().
+ */
+function exo_asset_entity_info_alter(&$entity_info) {
+  $entity_info['asset']['view modes']['embed_exo'] = array(
+    'label' => t('Embed eXo'),
+    'custom settings' => false
+  );
+}
+
+/**
  * Implements hook_exo_frame().
  */
 function exo_asset_exo_frame(){
@@ -80,7 +90,11 @@ function exo_asset_exo_frame_resources_alter(&$commands, $context){
   if($entity = entity_load($entity_type, array($entity_id))){
     $field = field_get_items($entity_type, reset($entity), $field_name);
     foreach(asset_token_find($field[$delta]['value']) as $id => $data){
-      asset_load_js($data['aid'], $data['iid'], 'embed', TRUE);
+      $asset = asset_load($data['aid'], $data['iid']);
+      if ($asset) {
+        $display_mode = exo_asset_display_mode($asset->type);
+        asset_load_js($data['aid'], $data['iid'], $display_mode, TRUE);
+      }
     }
   }
 }
@@ -142,4 +156,17 @@ function exo_asset_exo_settings_form_validate($form, &$form_state){
     }
   }
   drupal_array_set_nested_value($form_state['values'], $form['#parents'], $values);
+}
+
+/**
+ * Check which display mode to use.
+ */
+function exo_asset_display_mode($asset_type) {
+  static $cache;
+  if (!isset($cache[$asset_type])) {
+    $data = field_view_mode_settings('asset', $asset_type);
+    $cache[$asset_type] = !empty($data['embed_exo']['custom_settings']) ? 'embed_exo' : 'embed';
+  }
+  return $cache[$asset_type];
+
 }
