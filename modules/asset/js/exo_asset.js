@@ -3,7 +3,7 @@
 Drupal.behaviors.exo_asset = {
   attach: function (context, settings) {
     // context is not used in this selector as it breaks paging
-    $('#exo-pane .asset-select').once().click( this.assetSelect );
+    $('#exo-pane .asset-browser.assets-loaded .asset-select').once().click( this.assetSelect );
   },
 
   assetSelect: function ( event ) {
